@@ -14,7 +14,7 @@ def forum_list_view():
 
 
 @app.route("/<int:id>")
-def thread_list_view():
+def thread_list_view(id):
     thread_list = threads.thread_list(id)
     return render_template('thread_list.html', threads=thread_list)
 
