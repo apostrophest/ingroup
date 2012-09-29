@@ -65,7 +65,9 @@ def mock_data():
         mock_threads.append({
             'forum': choice(forum_ids),
             'title': choice(thread_titles),
-            'author': choice(author_ids)
+            'author': choice(author_ids),
+            'last_post': None,
+            'replies': None
             })
 
     db.get_engine().execute(threads.insert(mock_threads))
