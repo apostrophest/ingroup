@@ -31,6 +31,7 @@ def mock_data():
 
 
 def forum_list():
+    global forums
     forums_select = select([forums])
     result = db.get_engine().execute(forums_select)
 
