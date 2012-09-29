@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+    {% for forum in forums %}
+    <div class="row">
+        <div class="span8 offset2">
+        <a href="{{ url_for('forum_view', id=forum['id']) }}"><h1>{{forum['title']}}</h1></a>
+        <h3>{{forum['subtitle']}}</h3>
+        </div>
+    </div>
+    {% endfor %}
+{% endblock %}
