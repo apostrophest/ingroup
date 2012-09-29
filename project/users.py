@@ -46,16 +46,16 @@ def validate_login(name, password):
 
 def mock_data():
     db.get_engine().execute(users.insert(), [
-        {'password': bcrypt.hashpw('thompo', bcrypt.gensalt()),
-            'name': 'thompo', 'display_name': 'thompo',
-            'avatar': 'thompo.png'},
-        {'password': bcrypt.hashpw('yoshi', bcrypt.gensalt()),
-            'name': 'yoshi', 'display_name': 'yoshi',
-            'avatar': 'yoshi.png'},
-        {'password': bcrypt.hashpw('mike', bcrypt.gensalt()),
-            'name': 'mike', 'display_name': 'mike',
-            'avatar': 'mike.png'},
-        {'password': bcrypt.hashpw('alex', bcrypt.gensalt()),
-            'name': 'alex', 'display_name': 'alex',
-            'avatar': 'alex.png'}
+        {'password': bcrypt.hashpw('one', bcrypt.gensalt()),
+            'name': 'one', 'display_name': 'one',
+            'avatar': 'one.png'},
+        {'password': bcrypt.hashpw('two', bcrypt.gensalt()),
+            'name': 'two', 'display_name': 'two',
+            'avatar': 'two.png'},
+        {'password': bcrypt.hashpw('three', bcrypt.gensalt()),
+            'name': 'three', 'display_name': 'three',
+            'avatar': 'three.png'},
+        {'password': bcrypt.hashpw('four', bcrypt.gensalt()),
+            'name': 'four', 'display_name': 'four',
+            'avatar': 'four.png'}
         ])

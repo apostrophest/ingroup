@@ -62,12 +62,17 @@ def mock_data():
     mock_threads = []
 
     for x in xrange(20):
-        mock_threads.append({
-            'forum': choice(forum_ids),
-            'title': choice(thread_titles),
-            'author': choice(author_ids),
-            'last_post': None,
-            'replies': None
-            })
+        mocks = dict()
+        mocks['forum'] = choice(forum_ids)
+        mocks['title'] = choice(thread_titles)
+        mocks['author'] = choice(author_ids)
+        mock_threads.append(mocks)
+        #mock_threads.append({
+        #    'forum': choice(forum_ids),
+        #    'title': choice(thread_titles),
+        #    'author': choice(author_ids),
+        #    'last_post': None,
+        #    'replies': None
+        #    })
 
     db.get_engine().execute(threads.insert(mock_threads))
