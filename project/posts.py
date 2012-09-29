@@ -7,7 +7,7 @@ from flask import url_for
 
 
 posts = Table('posts', db.get_metadata(),
-    Column('post_id', Integer, primary_key=True),
+    Column('id', Integer, primary_key=True),
     Column('poster', Integer, ForeignKey('users.id')),
     Column('time', DateTime),
     Column('content_raw', String),
