@@ -68,4 +68,4 @@ def mock_data():
             'author': choice(author_ids)
             })
 
-    db.get_engine().insert(threads, mock_threads)
+    db.get_engine().execute(threads.insert(mock_threads))
