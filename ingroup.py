@@ -19,6 +19,11 @@ def thread_list_view(id):
     return render_template('thread_list.html', threads=thread_list)
 
 
+@app.route("/thread/<int:id>")
+def thread_view(id):
+    pass
+
+
 @app.route("/setup.py")
 def remote_setup_access():
     # Refuse to serve setup script remotely
