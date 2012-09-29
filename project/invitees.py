@@ -10,7 +10,7 @@ invitees = Table('invitees', db.get_metadata(),
     Column('name', String),
     Column('email', String),
     Column('code', String),
-    Column('inviter', ForeignKey('users.id'))
+    Column('inviter', Integer, ForeignKey('users.id'))
 )
 
 
