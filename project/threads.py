@@ -52,7 +52,8 @@ def thread_list(forum_id, number=prefs.THREADS_PER_PAGE, page=None):
     global threads
     # Pages of threads, or orders of threads, not implemented yet
     thread_select = select([threads.c.id, threads.c.title, users.users.c.name],
-        from_obj=threads.join(forums.forums).join(users.users)).limit(number).apply_labels()
+        threads.threads.c.forum == 3, from_obj=[threads.threads.\
+        join(users.users)]).limit(number).apply_labels()
 
     result = db.get_engine().execute(thread_select)
     thread_list = []
