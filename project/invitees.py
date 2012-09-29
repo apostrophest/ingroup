@@ -15,10 +15,12 @@ invitees = Table('invitees', db.get_metadata(),
 
 
 def drop_table():
+    global invitees
     invitees.drop(db.get_engine(), checkfirst=True)
 
 
 def create_table():
+    global invitees
     invitees.create(db.get_engine(), checkfirst=True)
 
 
