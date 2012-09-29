@@ -1,6 +1,8 @@
 import prefs
 from random import choice
 import db
+import users
+import forums
 from sqlalchemy import MetaData, Table, Column, Integer, String, ForeignKey
 from sqlalchemy.sql import select
 from flask import url_for
@@ -46,8 +48,22 @@ def object_translation(row):
     thread['last_post']['author_url'] = last_post_author_url  # MAKE REAL
 
 
-def load(number=prefs.THREADS_PER_PAGE, start_post=1):
-    pass
+def thread_list(forum_id, number=prefs.THREADS_PER_PAGE, page=None):
+    # Pages of threads, or orders of threads, not implemented yet
+    thread_select = select([threads.c.id, threads.c.title, users.c.name],
+        from_obj=threads.join(forums).join(users).limit(number)).apply_labels()
+
+    result = db.get_engine().execute(thread_select)
+    thread_list = []
+
+    for row in result:
+        thread = dict()
+        thread['id'] = row['threads_id']
+        thread['title'] = row['threads_title']
+        thread['author'] = row['users_name']
+        thread_list.append(thread)
+
+    return thread_list
 
 
 def mock_data():

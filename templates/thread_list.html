@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+    {% for thread in threads %}
+    <div class="row">
+        <div class="span8 offset1">
+        <a href="{{ url_for('thread_view', id=thread['id']) }}"><h3>{{thread['title']}}</h3></a>
+        </div>
+
+        <div class="span2">
+            <h6>{{ thread['author'] }}</h6>
+        </div>
+    </div>
+    {% endfor %}
+{% endblock %}
