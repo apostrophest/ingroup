@@ -1,7 +1,7 @@
 import os
 import sys
 
-sys.path.append(os.path.curdir.join('/project'))
+sys.path.append(os.path.join(os.path.abspath(os.path.curdir), 'project'))
 
 import users
 import forums
