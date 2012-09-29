@@ -1,3 +1,8 @@
+import os
+import sys
+
+sys.path.append(os.path.curdir.join('/project'))
+
 import users
 import forums
 import threads
