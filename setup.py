@@ -10,6 +10,7 @@ import posts
 import applicants
 import invitees
 import argparse
+import bcrypt
 
 parser = argparse.ArgumentParser(description='Set up an ingroup install.')
 parser.add_argument('--mock', dest='mock', action='store_const',
@@ -49,5 +50,14 @@ else:
     # Do a real install...
     # Don't know what that will look like yet.
     print 'Note: Tables are empty without mock data.'
+
+
+print 'Generating secret key...'
+try:
+  with open('key.py', 'w') as k:
+    k.write("SECRET_KEY = \'ingroup" + bcrypt.gen_salt() + "\'")
+    print 'Key generated successfully.'
+except IOError:
+  print 'Key generation FAILED.'
 
 print 'Done.'

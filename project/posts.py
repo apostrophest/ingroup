@@ -1,12 +1,12 @@
-import db
 import prefs
 import threads
 import users
 from random import choice
 from datetime import datetime
-from sqlalchemy import Table, Column, Integer, String, ForeignKey, DateTime
-from sqlalchemy.sql import select
+#from sqlalchemy import Table, Column, Integer, String, ForeignKey, DateTime
+#from sqlalchemy.sql import select
 from flask import url_for
+from flask.ext.sqlalchemy import SQLAlchemy
 
 
 posts = Table('posts', db.get_metadata(),
@@ -17,6 +17,8 @@ posts = Table('posts', db.get_metadata(),
     Column('content_html', String),
     Column('thread', Integer, ForeignKey('threads.id'))
 )
+
+
 
 
 def drop_table():
