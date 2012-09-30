@@ -3,6 +3,8 @@ import forums
 import users
 import threads
 import posts
+import sys
+import os
 app = Flask(__name__)
 app.debug = True
 
@@ -28,3 +30,8 @@ def thread_view(id):
 def remote_setup_access():
     # Refuse to serve setup script remotely
     return render_template('error.html', type=404, message='')
+
+
+if __name__ == '__main__':
+    sys.path.append(os.path.join(os.getcwd(), 'project'))
+    app.run()
