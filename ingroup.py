@@ -1,10 +1,14 @@
+import sys
+import os
+if __name__ == '__main__':
+    sys.path.append(os.path.join(os.getcwd(), 'project'))
+
 from flask import Flask, render_template, request
 import forums
 import users
 import threads
 import posts
-import sys
-import os
+
 app = Flask(__name__)
 app.debug = True
 
@@ -23,7 +27,8 @@ def thread_list_view(id):
 
 @app.route("/thread/<int:id>")
 def thread_view(id):
-    pass
+    posts_list = posts.post_list(id)
+    return render_template('thread_view.html', posts=posts_list)
 
 
 @app.route("/setup.py")
@@ -33,5 +38,4 @@ def remote_setup_access():
 
 
 if __name__ == '__main__':
-    sys.path.append(os.path.join(os.getcwd(), 'project'))
     app.run()

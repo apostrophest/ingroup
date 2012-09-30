@@ -1,4 +1,7 @@
 import db
+import prefs
+import threads
+import users
 from random import choice
 from datetime import datetime
 from sqlalchemy import Table, Column, Integer, String, ForeignKey, DateTime
@@ -24,6 +27,32 @@ def drop_table():
 def create_table():
     global posts
     posts.create(db.get_engine(), checkfirst=True)
+
+
+def post_list(thread_id, number=prefs.POSTS_PER_PAGE, page=None, start_at=None):
+    global posts
+
+    threads_table = threads.threads
+    users_table = users.users
+
+    posts_select = select([posts.c.id, posts.c.time, posts.c.content_html,\
+        users_table.c.name],\
+        posts.c.thread == thread_id, from_obj=[posts.join(users_table)]).\
+        limit(number).apply_labels()
+
+    result = db.get_engine().execute(posts_select)
+    posts_list = []
+
+    for row in result:
+        post = dict()
+        post['post_id'] = row[posts.c.id]
+        post['time'] = row[posts.c.time]
+        post['content'] = row[posts.c.content_html]
+        post['author'] = dict()
+        post['author']['name'] = row[users_table.c.name]
+        posts_list.append(post)
+
+    return posts_list
 
 
 def mock_data():
