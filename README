@@ -10,6 +10,7 @@ Current Python dependencies
 - Flask
 - bcrypt
 - SQLAlchemy
+- flask-login
 
 Current HTML/CSS/JS dependencies
 - jQuery
