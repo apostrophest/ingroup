@@ -8,9 +8,12 @@ import forums
 import users
 import threads
 import posts
+import prefs
+from flask.ext.sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-app.debug = True
+app.config.from_object(prefs.Config)
+db = SQLAlchemy(app)
 
 
 @app.route("/")

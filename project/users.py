@@ -1,37 +1,20 @@
-import db
 import bcrypt
 from sqlalchemy import Table, Column, Integer, String
 from sqlalchemy.sql import select
 from flask import url_for
+from ingroup import db
 
 
-users = Table('users', db.get_metadata(),
-    Column('id', Integer, primary_key=True),
-    Column('name', String, unique=True),
-    Column('display_name', String),
-    Column('password', String),
-    Column('avatar', String),
-    Column('email', String)
-)
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(24), unique=True)
+    display_name = db.Column(db.String(50))
+    password = db.Column(db.String(50))
+    avatar = db.Column(db.String(50))
+    email = db.Column(db.String(100))
 
-
-def drop_table():
-    global users
-    users.drop(db.get_engine(), checkfirst=True)
-
-
-def create_table():
-    global users
-    users.create(db.get_engine(), checkfirst=True)
-
-
-def count():
-    global users
-    return select([users]).count()
-
-
-def register_user(name, password):
-    pass
+    posts = db.relationship('Post', backref='author', lazy='dynamic')
+    # Possible threads relationship here
 
 
 def validate_login(name, password):

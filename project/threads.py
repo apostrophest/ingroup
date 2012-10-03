@@ -1,11 +1,28 @@
 import prefs
 from random import choice
-import db
 import users
 import forums
 from sqlalchemy import MetaData, Table, Column, Integer, String, ForeignKey
 from sqlalchemy.sql import select
 from flask import url_for
+from ingroup import db
+
+
+class Thread(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100))
+    replies = db.Column(db.Integer)
+
+    forum_id = db.Column(db.Integer, db.ForeignKey('forum.id'))
+    forum = db.relationship('Forum', backref=db.backref('threads', lazy='dynamic'))
+    
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    author = db.relationship('User', backref=db.backref('threads', lazy='dynamic'))
+
+    last_post_id = db.Column(db.Integer, ForeignKey('post.id'))
+    last_post = db.relationship('Post')
+
+    posts = db.relationship('Post', backref='thread', lazy='dynamic')
 
 
 threads = Table('threads', db.get_metadata(),

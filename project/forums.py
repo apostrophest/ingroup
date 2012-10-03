@@ -1,8 +1,14 @@
-import db
 from sqlalchemy import Table, Column, Integer, String
 from sqlalchemy.sql import select
 from flask import url_for
+from ingroup import db
 
+class Forum(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100))
+    subtitle = db.Column(db.String(200))
+
+    threads = db.relationship('Thread', backref='forum', lazy='dynamic')
 
 forums = Table('forums', db.get_metadata(),
     Column('id', Integer, primary_key=True),

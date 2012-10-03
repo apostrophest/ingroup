@@ -6,7 +6,16 @@ from datetime import datetime
 #from sqlalchemy import Table, Column, Integer, String, ForeignKey, DateTime
 #from sqlalchemy.sql import select
 from flask import url_for
-from flask.ext.sqlalchemy import SQLAlchemy
+from ingroup import db
+
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    time = db.Column(db.DateTime)
+    content_raw = db.Column(db.Text)
+    content_html = db.Column(db.Text)
+
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    thread_id = db.Column(db.Integer, db.ForeignKey('thread.id'))
 
 
 posts = Table('posts', db.get_metadata(),
@@ -33,6 +42,8 @@ def create_table():
 
 def post_list(thread_id, number=prefs.POSTS_PER_PAGE, page=None, start_at=None):
     global posts
+
+    posts_list = Post.query.
 
     threads_table = threads.threads
     users_table = users.users
