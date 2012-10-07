@@ -10,39 +10,24 @@ class Forum(db.Model):
 
     threads = db.relationship('Thread', backref='forum', lazy='dynamic')
 
-forums = Table('forums', db.get_metadata(),
-    Column('id', Integer, primary_key=True),
-    Column('title', String),
-    Column('subtitle', String)
-)
-
-
-def drop_table():
-    forums.drop(db.get_engine(), checkfirst=True)
-
-
-def create_table():
-    forums.create(db.get_engine(), checkfirst=True)
-
+    def __init__(self, title, subtitle):
+        self.title = title
+        self.subtitle = subtitle
 
 def mock_data():
-    db.get_engine().execute(forums.insert(), [
+    data = [
         {'title': 'Announcements',
             'subtitle': 'Important shit you need to know.'},
         {'title': 'Action no Dev',
             'subtitle': 'Games that will never be completed.'},
         {'title': 'Juicy Juice',
             'subtitle': 'Everything and/or nothing.'}
-        ])
+    ]
 
+    for datum in data:
+        db.session.add(Forum(**datum))
+
+        db.session.commit()
 
 def forum_list():
-    global forums
-    forums_select = select([forums])
-    result = db.get_engine().execute(forums_select)
-
-    forums_list = []
-    for row in result:
-        forums_list.append(dict(row))
-
-    return forums_list
+    return Forum.query.all()

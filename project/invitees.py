@@ -1,27 +1,17 @@
-import db
 import bcrypt
 from sqlalchemy import Table, Column, Integer, String, ForeignKey
 from sqlalchemy.sql import select
 from flask import url_for
+from ingroup import db
 
-
-invitees = Table('invitees', db.get_metadata(),
-    Column('id', Integer, primary_key=True),
-    Column('name', String),
-    Column('email', String),
-    Column('code', String),
-    Column('inviter', Integer, ForeignKey('users.id'))
-)
-
-
-def drop_table():
-    global invitees
-    invitees.drop(db.get_engine(), checkfirst=True)
-
-
-def create_table():
-    global invitees
-    invitees.create(db.get_engine(), checkfirst=True)
+class Invitee(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(24), unique=True)
+    email = db.Column(db.String(100))
+    code = db.Column(db.String(32))
+    
+    inviter_id = db.Column(db.Integer, ForeignKey('user.id'))
+    inviter = db.Relationship('User')
 
 
 def mock_data():

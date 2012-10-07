@@ -3,6 +3,7 @@ import sys
 
 sys.path.append(os.path.join(os.path.abspath(os.path.curdir), 'project'))
 
+from ingroup import db
 import users
 import forums
 import threads
@@ -22,19 +23,9 @@ args = parser.parse_args()
 
 print 'Cleaning up...'
 
-users.drop_table()
-forums.drop_table()
-threads.drop_table()
-posts.drop_table()
-applicants.drop_table()
-invitees.drop_table()
+db.drop_all()
 
-users.create_table()
-forums.create_table()
-threads.create_table()
-posts.create_table()
-applicants.create_table()
-invitees.create_table()
+db.create_all()
 
 print 'Tables created...'
 

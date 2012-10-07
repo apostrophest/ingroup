@@ -40,5 +40,30 @@ def remote_setup_access():
     return render_template('error.html', type=404, message='')
 
 
+@app.route("/static/css/<css_file>")
+def css_dir(css_file):
+    pass
+
+
+@app.route("/static/js/<js_file>")
+def js_dir(js_file):
+    pass
+
+
+@app.route("/static/img/smilies/<image_name>")
+def smilies_dir(image_name):
+    pass
+
+
+@app.route("/static/img/avatars/<image_name>")
+def avatars_dir(image_name):
+    pass
+
+
+@app.route("/static/uploads/<file_name>")
+def uploads_dir(file_name):
+    pass
+
+
 if __name__ == '__main__':
     app.run()

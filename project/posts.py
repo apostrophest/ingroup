@@ -17,29 +17,6 @@ class Post(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     thread_id = db.Column(db.Integer, db.ForeignKey('thread.id'))
 
-
-posts = Table('posts', db.get_metadata(),
-    Column('id', Integer, primary_key=True),
-    Column('poster', Integer, ForeignKey('users.id')),
-    Column('time', DateTime),
-    Column('content_raw', String),
-    Column('content_html', String),
-    Column('thread', Integer, ForeignKey('threads.id'))
-)
-
-
-
-
-def drop_table():
-    global posts
-    posts.drop(db.get_engine(), checkfirst=True)
-
-
-def create_table():
-    global posts
-    posts.create(db.get_engine(), checkfirst=True)
-
-
 def post_list(thread_id, number=prefs.POSTS_PER_PAGE, page=None, start_at=None):
     global posts
 
