@@ -27,7 +27,7 @@ def mock_data():
     for datum in data:
         db.session.add(Forum(**datum))
 
-        db.session.commit()
+    db.session.commit()
 
 def forum_list():
     return Forum.query.all()
