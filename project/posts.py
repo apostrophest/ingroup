@@ -6,7 +6,7 @@ from datetime import datetime
 #from sqlalchemy import Table, Column, Integer, String, ForeignKey, DateTime
 #from sqlalchemy.sql import select
 from flask import url_for
-from ingroup import db
+from database import db
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -20,7 +20,7 @@ class Post(db.Model):
 def post_list(thread_id, number=prefs.POSTS_PER_PAGE, page=None, start_at=None):
     global posts
 
-    posts_list = Post.query.
+    posts_list = Post.query.filter_by(thread_id=thread_id).limit(number).all()
 
     threads_table = threads.threads
     users_table = users.users

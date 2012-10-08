@@ -2,7 +2,7 @@ import bcrypt
 from sqlalchemy import Table, Column, Integer, String
 from sqlalchemy.sql import select
 from flask import url_for
-from ingroup import db
+from database import db
 
 
 class User(db.Model):
@@ -14,7 +14,7 @@ class User(db.Model):
     email = db.Column(db.String(100))
 
     posts = db.relationship('Post', backref='author', lazy='dynamic')
-    # Possible threads relationship here
+    threads = db.relationship('Thread', backref='author', lazy='dynamic')
 
 
 def validate_login(name, password):

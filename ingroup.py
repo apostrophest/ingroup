@@ -9,12 +9,11 @@ import users
 import threads
 import posts
 import prefs
-from flask.ext.sqlalchemy import SQLAlchemy
+import database
 
-app = Flask(__name__)
+app = database.create_app()
 app.config.from_object(prefs.Config)
-db = SQLAlchemy(app)
-
+app.test_request_context().push()
 
 @app.route("/")
 def forum_list_view():

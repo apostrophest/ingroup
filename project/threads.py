@@ -5,7 +5,7 @@ import forums
 from sqlalchemy import MetaData, Table, Column, Integer, String, ForeignKey
 from sqlalchemy.sql import select
 from flask import url_for
-from ingroup import db
+from database import db
 
 
 class Thread(db.Model):
@@ -14,9 +14,7 @@ class Thread(db.Model):
     replies = db.Column(db.Integer)
 
     forum_id = db.Column(db.Integer, db.ForeignKey('forum.id'))
-    
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    author = db.relationship('User', backref=db.backref('threads', lazy='dynamic'))
 
     last_post_id = db.Column(db.Integer, ForeignKey('post.id'))
     last_post = db.relationship('Post')

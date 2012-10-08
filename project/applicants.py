@@ -2,7 +2,7 @@ import bcrypt
 from sqlalchemy import Table, Column, Integer, String
 from sqlalchemy.sql import select
 from flask import url_for
-from ingroup import db
+from database import db
 
 class Applicant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
