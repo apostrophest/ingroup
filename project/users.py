@@ -1,9 +1,12 @@
+
 import bcrypt
 from sqlalchemy import Table, Column, Integer, String
 from sqlalchemy.sql import select
 from flask import url_for
-from database import db
 
+from database import db
+import posts
+import threads
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)

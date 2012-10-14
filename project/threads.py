@@ -2,6 +2,7 @@ import prefs
 from random import choice
 import users
 import forums
+import posts
 from sqlalchemy import MetaData, Table, Column, Integer, String, ForeignKey
 from sqlalchemy.sql import select
 from flask import url_for
@@ -16,10 +17,10 @@ class Thread(db.Model):
     forum_id = db.Column(db.Integer, db.ForeignKey('forum.id'))
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    last_post_id = db.Column(db.Integer, ForeignKey('post.id'))
-    last_post = db.relationship('Post')
+    #last_post_id = db.Column(db.Integer, ForeignKey('Post.id'))
+    #last_post = db.relationship('Post', uselist=False)
 
-    posts = db.relationship('Post', backref='thread', lazy='dynamic')
+    posts = db.relationship('Post', backref='thread', lazy='joined')
 
 
 def thread_list(forum_id, number=prefs.THREADS_PER_PAGE, page=None):
