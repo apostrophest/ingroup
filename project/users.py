@@ -31,7 +31,7 @@ def validate_login(name, password):
 
 
 def mock_data():
-    db.get_engine().execute(users.insert(), [
+    data = [
         {'password': bcrypt.hashpw('one', bcrypt.gensalt()),
             'name': 'one', 'display_name': 'one',
             'avatar': 'one.png'},
@@ -44,4 +44,9 @@ def mock_data():
         {'password': bcrypt.hashpw('four', bcrypt.gensalt()),
             'name': 'four', 'display_name': 'four',
             'avatar': 'four.png'}
-        ])
+        ]
+
+    for datum in data:
+        db.session.add(User(**datum))
+
+    db.session.commit()

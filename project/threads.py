@@ -52,13 +52,10 @@ def mock_data():
         'A comprehensive treatise concerning my support for Willard Romney']
     author_ids = [1, 2, 3, 4]
 
-    mock_threads = []
-
     for x in xrange(20):
-        mock_threads.append({
-            'forum': choice(forum_ids),
+        db.session.add(Thread(**{
+            'forum_id': choice(forum_ids),
             'title': choice(thread_titles),
-            'author': choice(author_ids)
-            })
+            'author_id': choice(author_ids)}))
 
-    db.get_engine().execute(threads.insert(), mock_threads)
+    db.session.commit()

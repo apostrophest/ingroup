@@ -50,7 +50,6 @@ def post_list(thread_id, number=prefs.POSTS_PER_PAGE, page=None, start_at=None):
 
 
 def mock_data():
-    global posts
     poster_ids = [1, 2, 3, 4]
     thread_ids = [x for x in xrange(1, 20)]
     contents = [
@@ -84,13 +83,8 @@ def mock_data():
         clogging the drain, I knew it was time."
     ]
 
-    mock_posts = []
-
     for x in xrange(50):
-        mock_posts.append({
-            'poster': choice(poster_ids),
-            'content_html': choice(contents),
-            'thread': choice(thread_ids)
-        })
-
-    db.get_engine().execute(posts.insert(), mock_posts)
+        db.session.add(Post(**{'author_id': choice(poster_ids),\
+            'content_html': choice(contents), 'thread_id': choice(thread_ids)}))
+    
+    db.session.commit()
