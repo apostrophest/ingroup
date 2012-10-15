@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <title>ingroup - alpha</title>
-    <link rel="stylesheet" href="{{ url_for('css_dir', css_file='bootstrap.min.css') }}" type="text/css" />
-    <script src="{{ url_for('js_dir', js_file='jquery-1.8.2.min.js') }}"></script>
-    <script src="{{ url_for('js_dir', js_file='bootstrap.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" type="text/css" />
+    <script src="{{ url_for('static', filename='js/jquery-1.8.2.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
     <script>
         {% block script %}{% endblock %}
     </script>

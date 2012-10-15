@@ -20,27 +20,11 @@ class Thread(db.Model):
     #last_post_id = db.Column(db.Integer, ForeignKey('Post.id'))
     #last_post = db.relationship('Post', uselist=False)
 
-    posts = db.relationship('Post', backref='thread', lazy='joined')
+    posts = db.relationship('Post', backref='thread', lazy='dynamic')
 
 
 def thread_list(forum_id, number=prefs.THREADS_PER_PAGE, page=None):
-    global threads
-    # Pages of threads, or orders of threads, not implemented yet
-    thread_select = select([threads.c.id, threads.c.title, users.users.c.name],
-        threads.c.forum == forum_id, from_obj=[threads.join(users.users)]).\
-        limit(number).apply_labels()
-
-    result = db.get_engine().execute(thread_select)
-    thread_list = []
-
-    for row in result:
-        thread = dict()
-        thread['id'] = row['threads_id']
-        thread['title'] = row['threads_title']
-        thread['author'] = row['users_name']
-        thread_list.append(thread)
-
-    return thread_list
+    return Thread.query.filter_by(forum_id=forum_id).all()
 
 
 def mock_data():

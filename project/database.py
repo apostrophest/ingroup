@@ -4,6 +4,6 @@ from flask.ext.sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 def create_app():
-    app = Flask(__name__, template_folder='/home/stephen/ingroup/templates/')
+    app = Flask(__name__, template_folder='/home/stephen/ingroup/templates/', static_folder='/home/stephen/ingroup/static')
     db.init_app(app)
     return app
