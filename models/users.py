@@ -5,8 +5,7 @@ from sqlalchemy.sql import select
 from flask import url_for
 
 from database import db
-import posts
-import threads
+from models import posts, threads
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -21,10 +20,19 @@ class User(db.Model):
 
 
 def validate_login(name, password):
+
+    """
+    Validates a user's login credentials.
+
+    :param basestring name: Username to validate
+    :param basestring password: Password to validate
+    :return: Whether credentials were validated or not
+    :rtype: bool
+    """
     global users
     find_user = users.select().where(users.c.name == name)
     user = db.get_engine().execute(find_user).fetchone()
-    if user != None:
+    if user is not None:
         if bcrypt.hashpw(password, user['password']) == user['password']:
             return True
     return False
@@ -48,5 +56,3 @@ def mock_data():
 
     for datum in data:
         db.session.add(User(**datum))
-
-    db.session.commit()

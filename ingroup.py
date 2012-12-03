@@ -1,13 +1,6 @@
-import sys
-import os
-if __name__ == '__main__':
-    sys.path.append(os.path.join(os.getcwd(), 'project'))
-
 from flask import Flask, render_template, request
-import forums
-import users
-import threads
-import posts
+
+from models import forums, users, threads, posts
 import prefs
 import database
 

@@ -1,13 +1,13 @@
-import prefs
+
 from random import choice
-import users
-import forums
-import posts
+
 from sqlalchemy import MetaData, Table, Column, Integer, String, ForeignKey
 from sqlalchemy.sql import select
 from flask import url_for
-from database import db
 
+from database import db
+import prefs
+from models import users, forums, posts
 
 class Thread(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -42,4 +42,3 @@ def mock_data():
             'title': choice(thread_titles),
             'author_id': choice(author_ids)}))
 
-    db.session.commit()

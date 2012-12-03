@@ -4,7 +4,7 @@ from sqlalchemy.sql import select
 from flask import url_for
 
 from database import db
-import threads
+from models import threads
 
 
 class Forum(db.Model):
@@ -31,7 +31,6 @@ def mock_data():
     for datum in data:
         db.session.add(Forum(**datum))
 
-    db.session.commit()
 
 def forum_list():
     return Forum.query.all()

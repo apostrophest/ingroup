@@ -4,8 +4,6 @@ import argparse
 
 import bcrypt
 
-sys.path.append(os.path.join(os.path.abspath(os.path.curdir), 'project'))
-
 print 'Generating secret key...'
 try:
   with open('key.py', 'w') as k:
@@ -14,18 +12,13 @@ try:
 except IOError:
   print 'Key generation FAILED.'
 
-import users
-import forums
-import threads
-import posts
-import applicants
-import invitees
+from models import users, forums, threads, posts, applicants, invitees
 from database import db
 import ingroup
 
 
 parser = argparse.ArgumentParser(description='Set up an ingroup install.')
-parser.add_argument('--mock', dest='mock', action='store_const',
+parser.add_argument('mock', dest='mock', action='store_const',
                    const=True, default=False,
                    help='Set up the install with mock data rather \
                    than a clean install.')
@@ -47,6 +40,9 @@ if args.mock:
     posts.mock_data()
     applicants.mock_data()
     invitees.mock_data()
+
+    db.session.commit()
+
     print 'Mock data installed...'
 else:
     # Do a real install...

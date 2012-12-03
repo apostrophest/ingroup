@@ -62,5 +62,3 @@ def mock_data():
     for x in xrange(50):
         db.session.add(Post(**{'author_id': choice(poster_ids),\
             'content_html': choice(contents), 'thread_id': choice(thread_ids)}))
-    
-    db.session.commit()
