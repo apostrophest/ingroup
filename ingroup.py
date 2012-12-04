@@ -1,27 +1,26 @@
-from flask import Flask, render_template, request
+from flask import render_template
+from database import db, create_flask_app
 
-from models import forums, users, threads, posts
-import prefs
-import database
+app = create_flask_app()
 
-app = database.create_app()
-app.config.from_object(prefs.Config)
+from controllers import forums, threads, posts
+
 
 @app.route("/")
 def forum_list_view():
-    forum_list = forums.forum_list()
+    forum_list = forums.forum_list(db.session)
     return render_template('forum_list.html', forums=forum_list)
 
 
 @app.route("/<int:id>")
 def thread_list_view(id):
-    thread_list = threads.thread_list(id)
+    thread_list = threads.thread_list(db.session, id)
     return render_template('thread_list.html', threads=thread_list)
 
 
 @app.route("/thread/<int:id>")
 def thread_view(id):
-    posts_list = posts.post_list(id)
+    posts_list = posts.post_list(db.session, id)
     return render_template('thread_view.html', posts=posts_list)
 
 

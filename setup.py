@@ -3,6 +3,12 @@ import sys
 import argparse
 
 import bcrypt
+#from flask import Flask
+#from flask.ext.sqlalchemy import SQLAlchemy
+
+import prefs
+from ingroup import db
+from models import *
 
 print 'Generating secret key...'
 try:
@@ -12,13 +18,14 @@ try:
 except IOError:
   print 'Key generation FAILED.'
 
-from models import users, forums, threads, posts, applicants, invitees
-from database import db
-import ingroup
+#app = Flask(__name__, template_folder='/home/stephen/ingroup/templates/', static_folder='/home/stephen/ingroup/static')
+#app.config.from_object(prefs.Config)
+#db = SQLAlchemy(app)
 
+from controllers import users, forums, threads, posts, applicants, invitees
 
 parser = argparse.ArgumentParser(description='Set up an ingroup install.')
-parser.add_argument('mock', dest='mock', action='store_const',
+parser.add_argument('--mock', dest='mock', action='store_const',
                    const=True, default=False,
                    help='Set up the install with mock data rather \
                    than a clean install.')
@@ -34,12 +41,12 @@ db.create_all()
 print 'Tables created...'
 
 if args.mock:
-    users.mock_data()
-    forums.mock_data()
-    threads.mock_data()
-    posts.mock_data()
-    applicants.mock_data()
-    invitees.mock_data()
+    users.mock_data(db.session)
+    forums.mock_data(db.session)
+    threads.mock_data(db.session)
+    posts.mock_data(db.session)
+    applicants.mock_data(db.session)
+    invitees.mock_data(db.session)
 
     db.session.commit()
 

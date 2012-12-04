@@ -1,31 +1,13 @@
-
 from random import choice
-from datetime import datetime
 
-#from sqlalchemy import Table, Column, Integer, String, ForeignKey, DateTime
-#from sqlalchemy.sql import select
-from flask import url_for
-
-from database import db
 import prefs
-import threads
-import users
+from models import Post
+
+def post_list(session, thread_id, number=prefs.POSTS_PER_PAGE, page=None, start_at=None):
+    return session.query(Post).filter_by(thread_id=thread_id).limit(number).all()
 
 
-class Post(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    time = db.Column(db.DateTime)
-    content_raw = db.Column(db.Text)
-    content_html = db.Column(db.Text)
-
-    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    thread_id = db.Column(db.Integer, db.ForeignKey('thread.id'))
-
-def post_list(thread_id, number=prefs.POSTS_PER_PAGE, page=None, start_at=None):
-    return Post.query.filter_by(thread_id=thread_id).limit(number).all()
-
-
-def mock_data():
+def mock_data(session):
     poster_ids = [1, 2, 3, 4]
     thread_ids = [x for x in xrange(1, 20)]
     contents = [
@@ -60,5 +42,5 @@ def mock_data():
     ]
 
     for x in xrange(50):
-        db.session.add(Post(**{'author_id': choice(poster_ids),\
+        session.add(Post(**{'author_id': choice(poster_ids),\
             'content_html': choice(contents), 'thread_id': choice(thread_ids)}))
