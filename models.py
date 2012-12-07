@@ -9,6 +9,7 @@ class User(db.Model):
     password = db.Column(db.String(50))
     avatar = db.Column(db.String(50))
     email = db.Column(db.String(100))
+    timezone = db.Column(db.String(30))
 
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     threads = db.relationship('Thread', backref='author', lazy='dynamic')
@@ -60,4 +61,8 @@ class Invitee(db.Model):
     inviter_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     inviter = db.relationship('User')
 
-
+LastRead = db.Table('last_read',
+                db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+                db.Column('thread_id', db.Integer, db.ForeignKey('thread.id')),
+                db.Column('post_id', db.Integer, db.ForeignKey('post.id'))
+            )

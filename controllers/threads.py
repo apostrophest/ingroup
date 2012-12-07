@@ -8,6 +8,10 @@ def thread_list(session, forum_id, number=prefs.THREADS_PER_PAGE, page=None):
     return session.query(Thread).filter_by(forum_id=forum_id).all()
 
 
+def thread_from_id(session, thread_id):
+    return session.query(Thread).filter_by(id=thread_id).first()
+
+
 def mock_data(session):
     global threads
     forum_ids = [1, 2, 3]

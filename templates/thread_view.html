@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
+    <div class="row">
+      <div class="span8 offset2"><h2>{{ thread.title }}</h2></div>
+    </div>
     {% for post in posts %}
     <div class="row">
-        <div class="span2 offset1">
+        <div class="span2 offset2">
         <h5>{{ post.author.name }}</h5>
         </div>
 

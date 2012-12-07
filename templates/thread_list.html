@@ -2,8 +2,12 @@
 {% block content %}
     {% for thread in threads %}
     <div class="row">
-        <div class="span8 offset1">
+        <div class="span6 offset2">
         <a href="{{ url_for('thread_view', id=thread.id) }}"><h5>{{thread.title}}</h5></a>
+        </div>
+
+        <div class="span2">
+          <p>{{thread.replies}}</p>
         </div>
 
         <div class="span2">

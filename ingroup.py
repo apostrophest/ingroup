@@ -5,7 +5,6 @@ app = create_flask_app()
 
 from controllers import forums, threads, posts
 
-
 @app.route("/")
 def forum_list_view():
     forum_list = forums.forum_list(db.session)
@@ -21,7 +20,8 @@ def thread_list_view(id):
 @app.route("/thread/<int:id>")
 def thread_view(id):
     posts_list = posts.post_list(db.session, id)
-    return render_template('thread_view.html', posts=posts_list)
+    thread = threads.thread_from_id(db.session, id)
+    return render_template('thread_view.html', posts=posts_list, thread=thread)
 
 
 @app.route("/setup.py")
