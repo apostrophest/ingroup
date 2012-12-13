@@ -1,7 +1,7 @@
 
 import bcrypt
 
-from models import User
+from models import db, User
 
 
 def validate_login(name, password):
@@ -38,3 +38,9 @@ def mock_data(session):
 
     for datum in data:
         session.add(User(**datum))
+
+def token_loader(token):
+    return db.session.query(User).filter(User.token==token).one()
+
+def user_loader(id):
+    return db.session.query(User).filter(User.id==int(id)).one()

@@ -10,9 +10,25 @@ class User(db.Model):
     avatar = db.Column(db.String(50))
     email = db.Column(db.String(100))
     timezone = db.Column(db.String(30))
+    token = db.Column(db.String(50))
 
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     threads = db.relationship('Thread', backref='author', lazy='dynamic')
+
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return unicode(self.id)
+
+    def get_auth_token(self):
+        return unicode(self.token)
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)

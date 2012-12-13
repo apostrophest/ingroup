@@ -1,11 +1,21 @@
-from flask import render_template
+from flask import render_template, redirect
+from flask.ext.login import LoginManager, login_required, logout_user
+
 from database import db, create_flask_app
 
 app = create_flask_app()
+login_manager = LoginManager()
+login_manager.init_app(app)
 
-from controllers import forums, threads, posts
+from controllers import forums, threads, posts, users
 
-@app.route("/")
+login_manager.token_loader(users.token_loader)
+login_manager.user_loader(users.user_loader)
+login_manager.login_view = 'forum_list_view'
+login_manager.session_protection = 'strong'
+
+
+@app.route("/", methods=['POST', 'GET'])
 def forum_list_view():
     forum_list = forums.forum_list(db.session)
     return render_template('forum_list.html', forums=forum_list)
@@ -28,6 +38,12 @@ def thread_view(id):
 def remote_setup_access():
     # Refuse to serve setup script remotely
     return render_template('error.html', type=404, message='')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect('/')
 
 
 if __name__ == '__main__':
