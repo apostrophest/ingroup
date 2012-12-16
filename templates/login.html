@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+      <div class="span4 offset4">
+          <form action="" method="post" id="form-login">
+              <input id="login-username" type="text" autofocus="true" maxlength="30" name="login-username" size="30" required="true" />
+              <input id="login-password" type="text" maxlength="50" name="login-password" size="50" required="true" />
+              <button type="submit" name="login-submit" id="login-submit">log in</button>
+          </form>
+      </div>
+    </div>
+{% endblock %}

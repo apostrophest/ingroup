@@ -1,5 +1,5 @@
-from flask import render_template, redirect
-from flask.ext.login import LoginManager, login_required, logout_user
+from flask import render_template, redirect, request, flash
+from flask.ext.login import LoginManager, login_required, login_user, logout_user, current_user
 
 from database import db, create_flask_app
 
@@ -17,8 +17,21 @@ login_manager.session_protection = 'strong'
 
 @app.route("/", methods=['POST', 'GET'])
 def forum_list_view():
-    forum_list = forums.forum_list(db.session)
-    return render_template('forum_list.html', forums=forum_list)
+    if request.method == 'GET':
+        if current_user.is_authenticated():
+            forum_list = forums.forum_list(db.session)
+            return render_template('forum_list.html', forums=forum_list)
+        else:
+            return render_template('login.html')
+    elif request.method == 'POST':
+        user = users.valid_credentials(db.session, request.form['login-username'], request.form['login-password'])
+        if user is not None:
+            login_user(user, remember=False)
+            forum_list = forums.forum_list(db.session)
+            return render_template('forum_list.html', forums=forum_list)
+        else:
+            flash(u'Login failed')
+            return render_template('login.html')
 
 
 @app.route("/<int:id>")

@@ -4,20 +4,20 @@ import bcrypt
 from models import db, User
 
 
-def validate_login(name, password):
+def valid_credentials(session, username, password):
     """
     Validates a user's login credentials.
 
     :param basestring name: Username to validate
     :param basestring password: Password to validate
-    :return: Whether credentials were validated or not
-    :rtype: bool
+    :return: User object of validated user, otherwise None
+    :rtype: User, None
     """
-    user = User.select().where(User.name == name).one()
+    user = session.query(User).filter(User.name == username).first()
     if user is not None:
-        if bcrypt.hashpw(password, user['password']) == user['password']:
-            return True
-    return False
+        if bcrypt.hashpw(password, user.password) == user.password:
+            return user
+    return None
 
 
 def mock_data(session):
@@ -40,7 +40,7 @@ def mock_data(session):
         session.add(User(**datum))
 
 def token_loader(token):
-    return db.session.query(User).filter(User.token==token).one()
+    return db.session.query(User).filter(User.token==token).first()
 
 def user_loader(id):
-    return db.session.query(User).filter(User.id==int(id)).one()
+    return db.session.query(User).filter(User.id==int(id)).first()
