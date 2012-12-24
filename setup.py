@@ -12,21 +12,22 @@ mocker.add_parser('mock')
 
 args = parser.parse_args()
 
+print 'Generating secret key...'
+try:
+    with open('key.py', 'w') as k:
+        k.write("SECRET_KEY = \'ingroup" + bcrypt.gensalt() + "\'")
+        print 'Key generated successfully.'
+except IOError:
+    print 'Key generation FAILED.'
+
+print 'Cleaning up...'
+
 import prefs
 from database import db, create_flask_app
 app = create_flask_app()
 
-from controllers import users, forums, threads, posts, applicants, invitees
+from controllers import users, forums, threads, posts, applicants
 
-print 'Generating secret key...'
-try:
-  with open('key.py', 'w') as k:
-    k.write("SECRET_KEY = \'ingroup" + bcrypt.gensalt() + "\'")
-    print 'Key generated successfully.'
-except IOError:
-  print 'Key generation FAILED.'
-
-print 'Cleaning up...'
 
 with app.test_request_context():
     db.drop_all()
@@ -41,7 +42,6 @@ with app.test_request_context():
         threads.mock_data(db.session)
         posts.mock_data(db.session)
         applicants.mock_data(db.session)
-        invitees.mock_data(db.session)
 
         db.session.commit()
 

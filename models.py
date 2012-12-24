@@ -11,6 +11,7 @@ class User(db.Model):
     email = db.Column(db.String(100))
     timezone = db.Column(db.String(30))
     token = db.Column(db.String(50))
+    approved = db.Column(db.Boolean())
 
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     threads = db.relationship('Thread', backref='author', lazy='dynamic')
@@ -19,16 +20,20 @@ class User(db.Model):
         return True
 
     def is_active(self):
-        return True
+        return bool(self.approved)
 
     def is_anonymous(self):
-        return False
+        return not self.approved
 
     def get_id(self):
         return unicode(self.id)
 
     def get_auth_token(self):
         return unicode(self.token)
+
+    def __repr__(self):
+        return u"<User: id={0:>s}, name={1:>s}, display_name={2:>s}, email={3:>s}, approved={4:>s}>".format(
+            str(self.id), self.name, self.display_name, self.email, repr(bool(self.approved)))
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -47,9 +52,6 @@ class Thread(db.Model):
     forum_id = db.Column(db.Integer, db.ForeignKey('forum.id'))
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    #last_post_id = db.Column(db.Integer, ForeignKey('Post.id'))
-    #last_post = db.relationship('Post', uselist=False)
-
     posts = db.relationship('Post', backref='thread', lazy='dynamic')
 
 class Forum(db.Model):
@@ -65,17 +67,16 @@ class Forum(db.Model):
 
 class Applicant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.relationship('User', foreign_keys=user_id)
     reason = db.Column(db.String(256))
-    email = db.Column(db.String(100))
-
-class Invitee(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(24), unique=True)
-    email = db.Column(db.String(100))
-    code = db.Column(db.String(32))
 
     inviter_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    inviter = db.relationship('User')
+    inviter = db.relationship('User', foreign_keys=inviter_id)
+
+    def __repr__(self):
+        return u'<Applicant id={0:>s}, user={1:>s}, reason={2:>s}'.format(str(self.id), self.user, self.reason)
+
 
 LastRead = db.Table('last_read',
                 db.Column('user_id', db.Integer, db.ForeignKey('user.id')),

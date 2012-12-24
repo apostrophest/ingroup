@@ -24,16 +24,23 @@ def forum_list_view():
         else:
             return render_template('login.html')
     elif request.method == 'POST':
-        user = users.valid_credentials(db.session, request.form['login-username'], request.form['login-password'])
-        if user is not None:
-            login_user(user, remember=False)
-            forum_list = forums.forum_list(db.session)
-            return render_template('forum_list.html', forums=forum_list)
-        else:
-            flash(u'Login failed')
-            return render_template('login.html')
-
-
+        if 'login-username' in request.form:
+            user = users.valid_credentials(db.session, request.form['login-username'], request.form['login-password'])
+            if user is not None:
+                login_user(user, remember=False)
+                forum_list = forums.forum_list(db.session)
+                return render_template('forum_list.html', forums=forum_list)
+            else:
+                flash(u'Login failed')
+                return render_template('login.html')
+        elif 'apply-username' in request.form:
+            user = users.create_user(db.session, request.form['apply-username'], request.form['apply-password'], request.form['apply-email'], request.form['apply-reason'])
+            if user is None:
+                flash(u'Username "%s" is already taken.' % request.form['apply-username'])
+                return render_template('login.html')
+            else:
+                flash(u'Your application has been sent.')
+                return render_template('login.html')
 @app.route("/<int:id>")
 def thread_list_view(id):
     thread_list = threads.thread_list(db.session, id)
