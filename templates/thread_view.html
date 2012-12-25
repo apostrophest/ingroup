@@ -10,7 +10,7 @@
         </div>
 
         <div class="span8">
-            {{ Markup(post.content_html).unescape() }}
+            {{ Markup(post.content_html) }}
         </div>
     </div>
     {% endfor %}
