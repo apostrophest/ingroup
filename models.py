@@ -1,6 +1,7 @@
 __author__ = 'Stephen Thompson <stephen@chomadoma.net>'
 
 from database import db
+from flask.ext.login import make_secure_token
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -29,7 +30,7 @@ class User(db.Model):
         return unicode(self.id)
 
     def get_auth_token(self):
-        return unicode(self.token)
+        return make_secure_token(self.name, self.password)
 
     def __repr__(self):
         return u"<User: id={0:>s}, name={1:>s}, display_name={2:>s}, email={3:>s}, approved={4:>s}>".format(
@@ -75,7 +76,7 @@ class Applicant(db.Model):
     inviter = db.relationship('User', foreign_keys=inviter_id)
 
     def __repr__(self):
-        return u'<Applicant id={0:>s}, user={1:>s}, reason={2:>s}'.format(str(self.id), self.user, self.reason)
+        return u'<Applicant id={0:>s}, user={1:>r}, reason={2:>s}>'.format(str(self.id), self.user, self.reason)
 
 
 LastRead = db.Table('last_read',

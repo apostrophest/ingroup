@@ -14,7 +14,8 @@ def valid_credentials(session, username, password):
     :return: User object of validated user, otherwise None
     :rtype: User, None
     """
-    user = session.query(User).filter(User.name == username).first()
+    user = session.query(User).filter(User.name==username).first()
+    print repr(user)
     if user is not None:
         if bcrypt.hashpw(password, user.password) == user.password and user.is_active():
             return user
@@ -34,7 +35,7 @@ def create_user(session, username, password, email, reason):
             'timezone': 'UTC',
             'password': bcrypt.hashpw(password, bcrypt.gensalt(12))
         }
-        user['token'] = make_secure_token(user['name'], bcrypt.gensalt(12), user['password'])
+        user['token'] = make_secure_token(user['name'], user['password'])
 
         user = User(**user)
         session.add(user)
@@ -63,11 +64,15 @@ def mock_data(session):
         ]
 
     for datum in data:
-        datum['token'] = make_secure_token(datum['name'], bcrypt.gensalt(12), datum['password'])
+        datum['token'] = make_secure_token(datum['name'], datum['password'])
         session.add(User(**datum))
 
 def token_loader(token):
-    return db.session.query(User).filter(User.token==token).first()
+    return User.query.filter(User.token==token).first()
 
-def user_loader(id):
-    return db.session.query(User).filter(User.id==int(id)).first()
+def user_loader(uid):
+    user = User.query.filter(User.id==int(uid)).first()
+    print "User: auth: {0}, active: {1}, anon: {2}, id: {3}, get_token: {4}, stored_token: {5}".format(
+        user.is_authenticated(), user.is_active(), user.is_anonymous(), user.get_id(), user.get_auth_token(), user.token
+    )
+    return user

@@ -3,7 +3,7 @@
     {% for forum in forums %}
     <div class="row">
         <div class="span8 offset2">
-        <a href="{{ url_for('thread_list_view', id=forum['id']) }}"><h3>{{forum['title']}}</h3></a>
+        <a href="{{ url_for('thread_list_view', forum_id=forum['id']) }}"><h3>{{forum['title']}}</h3></a>
         <h6>{{forum['subtitle']}}</h6>
         </div>
     </div>

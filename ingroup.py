@@ -1,4 +1,4 @@
-from flask import render_template, redirect, request, flash
+from flask import render_template, redirect, request, flash, url_for
 from flask.ext.login import LoginManager, login_required, login_user, logout_user, current_user
 
 from database import db, create_flask_app
@@ -22,36 +22,25 @@ def forum_list_view():
             forum_list = forums.forum_list(db.session)
             return render_template('forum_list.html', forums=forum_list)
         else:
-            return render_template('login.html')
-    elif request.method == 'POST':
-        if 'login-username' in request.form:
-            user = users.valid_credentials(db.session, request.form['login-username'], request.form['login-password'])
-            if user is not None:
-                login_user(user, remember=False)
-                forum_list = forums.forum_list(db.session)
-                return render_template('forum_list.html', forums=forum_list)
-            else:
-                flash(u'Login failed')
-                return render_template('login.html')
-        elif 'apply-username' in request.form:
-            user = users.create_user(db.session, request.form['apply-username'], request.form['apply-password'], request.form['apply-email'], request.form['apply-reason'])
-            if user is None:
-                flash(u'Username "%s" is already taken.' % request.form['apply-username'])
-                return render_template('login.html')
-            else:
-                flash(u'Your application has been sent.')
-                return render_template('login.html')
-@app.route("/<int:id>")
-def thread_list_view(id):
-    thread_list = threads.thread_list(db.session, id)
+            return redirect('/login')
+    el
+@app.route("/<int:forum_id>")
+@login_required
+def thread_list_view(forum_id):
+    thread_list = threads.thread_list(db.session, forum_id)
     return render_template('thread_list.html', threads=thread_list)
 
 
-@app.route("/thread/<int:id>")
-def thread_view(id):
-    posts_list = posts.post_list(db.session, id)
-    thread = threads.thread_from_id(db.session, id)
-    return render_template('thread_view.html', posts=posts_list, thread=thread)
+@app.route("/thread/<int:thread_id>", methods=['POST', 'GET'])
+@login_required
+def thread_view(thread_id):
+    if request.method == 'GET':
+        posts_list = posts.post_list(db.session, thread_id)
+        thread = threads.thread_from_id(db.session, thread_id)
+        return render_template('thread_view.html', posts=posts_list, thread=thread)
+    elif request.method == 'POST':
+        post = posts.make_post(db.session, current_user, thread_id, request.form['post-body'])
+        return redirect(url_for('/thread/{0:>d}'.format(thread_id), _anchor=post.id))
 
 
 @app.route("/setup.py")
@@ -59,6 +48,27 @@ def remote_setup_access():
     # Refuse to serve setup script remotely
     return render_template('error.html', type=404, message='')
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return render_template('login.html')
+    if request.method == 'POST':
+        if 'login-username' in request.form:
+            user = users.valid_credentials(db.session, request.form['login-username'], request.form['login-password'])
+            if user is not None:
+                login_user(user, remember=False)
+                return redirect('/')
+            else:
+                flash(u'Login failed')
+                return redirect('/login')
+        elif 'apply-username' in request.form:
+            user = users.create_user(db.session, request.form['apply-username'], request.form['apply-password'], request.form['apply-email'], request.form['apply-reason'])
+            if user is None:
+                flash(u'Username "%s" is already taken.' % request.form['apply-username'])
+                return redirect('/login')
+            else:
+                flash(u'Your application has been sent.')
+                return redirect('/login')
 @app.route('/logout')
 @login_required
 def logout():
