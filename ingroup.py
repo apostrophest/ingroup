@@ -1,5 +1,8 @@
 from flask import render_template, redirect, request, flash, url_for
 from flask.ext.login import LoginManager, login_required, login_user, logout_user, current_user
+from flask import Markup
+
+import pytz
 
 from database import db, create_flask_app
 
@@ -11,19 +14,17 @@ from controllers import forums, threads, posts, users
 
 login_manager.token_loader(users.token_loader)
 login_manager.user_loader(users.user_loader)
-login_manager.login_view = 'forum_list_view'
+login_manager.login_view = 'login'
 login_manager.session_protection = 'strong'
 
 
-@app.route("/", methods=['POST', 'GET'])
+@app.route("/")
+@login_required
 def forum_list_view():
-    if request.method == 'GET':
-        if current_user.is_authenticated():
-            forum_list = forums.forum_list(db.session)
-            return render_template('forum_list.html', forums=forum_list)
-        else:
-            return redirect('/login')
-    el
+    forum_list = forums.forum_list(db.session)
+    return render_template('forum_list.html', forums=forum_list)
+
+
 @app.route("/<int:forum_id>")
 @login_required
 def thread_list_view(forum_id):
@@ -37,10 +38,22 @@ def thread_view(thread_id):
     if request.method == 'GET':
         posts_list = posts.post_list(db.session, thread_id)
         thread = threads.thread_from_id(db.session, thread_id)
-        return render_template('thread_view.html', posts=posts_list, thread=thread)
+        return render_template('thread_view.html', posts=posts_list, thread=thread, Markup=Markup)
     elif request.method == 'POST':
         post = posts.make_post(db.session, current_user, thread_id, request.form['post-body'])
-        return redirect(url_for('/thread/{0:>d}'.format(thread_id), _anchor=post.id))
+        db.session.commit()
+        return redirect(url_for('.thread_view', thread_id=thread_id, _anchor=post.id))
+
+@app.route('/user/<int:uid>', methods=['POST', 'GET'])
+@login_required
+def user_profile(uid):
+    user = users.user_loader(uid)
+    if user is not None:
+        if request.method == 'POST':
+            user.timezone = request.form['profile-timezone']
+            user.display_name = request.form['profile-displayname']
+            db.session.commit()
+        return render_template('profile.html', user=user, timezones=pytz.common_timezones)
 
 
 @app.route("/setup.py")
@@ -56,7 +69,8 @@ def login():
         if 'login-username' in request.form:
             user = users.valid_credentials(db.session, request.form['login-username'], request.form['login-password'])
             if user is not None:
-                login_user(user, remember=False)
+                login_user(user, remember=True)
+                print current_user.is_authenticated()
                 return redirect('/')
             else:
                 flash(u'Login failed')

@@ -10,12 +10,16 @@
         </div>
 
         <div class="span8">
-            <p>{{ post.content_html }}</p>
+            {{ Markup(post.content_html).unescape() }}
         </div>
     </div>
     {% endfor %}
+    <div class="row">
+    <div class="span4 offset4">
     <form action="" method="post" id="post-form">
       <textarea id="post-body" name="post-body" rows="4" maxlength="5000" required="true"></textarea>
-      <button type="submit" id="post-submit" name="post-submit" />
+      <button type="submit" id="post-submit" name="post-submit">post</button>
     </form>
+    </div>
+    </div>
 {% endblock %}

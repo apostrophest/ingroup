@@ -15,9 +15,9 @@ def valid_credentials(session, username, password):
     :rtype: User, None
     """
     user = session.query(User).filter(User.name==username).first()
-    print repr(user)
     if user is not None:
         if bcrypt.hashpw(password, user.password) == user.password and user.is_active():
+            print '=== VALIDATED ==='
             return user
     return None
 

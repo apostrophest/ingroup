@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+	<div class="span4 offset4">
+    <h1>Settings</h1>
+    <form action="" method="post" id="profile-form">
+        <label for="profile-timezone">Timezone</label>
+        <select id="profile-timezone">
+            {% for timezone in timezones %}
+                {% if timezone == user.timezone %}
+                  <option name="{{ timezone }}" selected="true">{{ timezone }}</option>
+                {% else %}
+                <option name="{{ timezone }}">{{ timezone }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+        <label for="profile-displayname">Display Name</label>
+        <input type="text" id="profile-displayname" name="profile-displayname" size="50" maxlength="50">{{ user.display_name }}</input>
+        <button type="submit" id="profile-submit" name="profile-submit">update</button>
+    </form>
+  </div>
+    {% endfor %}
+{% endblock %}
