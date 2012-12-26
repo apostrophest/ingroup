@@ -22,7 +22,8 @@ login_manager.session_protection = 'strong'
 @login_required
 def forum_list_view():
     forum_list = forums.forum_list(db.session)
-    return render_template('forum_list.html', forums=forum_list)
+    applicants = users.get_applicants(db.session)
+    return render_template('forum_list.html', forums=forum_list, applicants=applicants)
 
 
 @app.route("/<int:forum_id>")
@@ -55,6 +56,10 @@ def user_profile(uid):
             db.session.commit()
         return render_template('profile.html', user=user, timezones=pytz.common_timezones)
 
+@app.route('/applicants')
+@login_required
+def applicants():
+    pass
 
 @app.route("/setup.py")
 def remote_setup_access():

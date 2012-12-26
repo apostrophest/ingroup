@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
+    {% if applicants.length %}
+      <div class="row">
+        <div class="span8 offset2">
+            <a href="{{ url_for('applicants') }}"><h3>{{ applicants.length }} applicants pending</h3></a>
+        </div>
+      </div>
+    {% endif %}
     {% for forum in forums %}
     <div class="row">
         <div class="span8 offset2">
