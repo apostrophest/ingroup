@@ -1,0 +1,19 @@
+.post-header {
+    margin-top:1.4em;
+}
+
+.post-header p {
+    font-weight:bold;
+    font-size:120%;
+    padding-bottom:2px;
+    border-bottom:1px solid #222222;
+}
+
+.timestamp {
+    font-weight:normal;
+    font-size:75%;
+}
+
+.quote-button {
+    font-size:150%;
+}

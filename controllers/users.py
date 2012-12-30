@@ -48,7 +48,18 @@ def create_user(session, username, password, email, reason):
         return user
 
 def get_applicants(session):
-    return session.query(User).filter(User.id.in_(session.query(Applicant.user_id))).all()
+    return session.query(Applicant).all()
+
+def accept_applicant(session, applicant_id, accepter):
+    # Set applicant approved status to True
+    # Remove applicant row
+    # TODO: send email to applicant
+    pass
+
+def reject_applicant(session, applicant_id):
+    # Remove applicant row
+    # TODO: sent email to applicant
+    pass
 
 
 def mock_data(session):

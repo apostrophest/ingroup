@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+    {% for applicant in applicants %}
+    <div class="row">
+      <div class="span2 offset2">
+          <h4>{{ applicant.user.name }}</h4>
+      </div>
+      <div class="span4 offset2">
+          <p>{{ applicant.reason }}</p>
+      </div>
+      <div class="span2">
+          <form action="" method="post" id="applicant-form">
+              <button type="submit" id="applicant-accept" name="applicant-accept" value="{{ applicant.user.id }}">accept</button>
+              <button type="submit" id="applicant-reject" name="applicant-reject" value="{{ applicant.user.id }}">reject</button>
+          </form>
+      </div>
+    </div>
+    {% endfor %}
+{% endblock %}

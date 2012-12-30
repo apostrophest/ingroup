@@ -4,22 +4,25 @@
       <div class="span8 offset2"><h2>{{ thread.title }}</h2></div>
     </div>
     {% for post in posts %}
-    <div class="row" name="{{ post.id }}">
-        <div class="span2 offset2">
-        <h5>{{ post.author.name }}</h5>
-        </div>
-
-        <div class="span8">
-            {{ Markup(post.content_html) }}
-        </div>
+    <div class="row">
+      <div class="post-header span8 offset2">
+        <p>{{ post.author.name }} <span class="timestamp">{{ post.get_localized_datetime() }}</span></p>
+        <a><p class="quote-button" id="{{ post.id }}">Q</p></a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="span8 offset2" id="{{ post.id }}">
+				{{ Markup(post.content_html) }}
+      </div>
+      <div class="hidden" id="{{ post.id }}">{{ post.content_raw }}</div>
     </div>
     {% endfor %}
     <div class="row">
-    <div class="span4 offset4">
-    <form action="" method="post" id="post-form">
-      <textarea id="post-body" name="post-body" rows="4" maxlength="5000" required="true"></textarea>
-      <button type="submit" id="post-submit" name="post-submit">post</button>
-    </form>
-    </div>
+      <div class="span4 offset4">
+        <form action="" method="post" id="post-form">
+          <textarea id="post-body" name="post-body" rows="4" maxlength="5000" required="true"></textarea>
+          <button type="submit" id="post-submit" name="post-submit">post</button>
+        </form>
+      </div>
     </div>
 {% endblock %}

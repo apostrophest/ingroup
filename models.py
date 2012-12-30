@@ -45,6 +45,11 @@ class Post(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     thread_id = db.Column(db.Integer, db.ForeignKey('thread.id'))
 
+    def get_localized_datetime(self):
+        if self.time is not None:
+            return self.time.strftime("%Y-%m-%d %H:%M")
+        return None
+
 class Thread(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
