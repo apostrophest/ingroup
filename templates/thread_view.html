@@ -7,14 +7,14 @@
     <div class="row">
       <div class="post-header span8 offset2">
         <p>{{ post.author.name }} <span class="timestamp">{{ post.get_localized_datetime() }}</span></p>
-        <a><p class="quote-button" id="{{ post.id }}">Q</p></a>
+        <a class="quote" id="{{ post.id }}"><p class="quote-button">Q</p></a>
       </div>
     </div>
     <div class="row">
-      <div class="span8 offset2" id="{{ post.id }}">
+      <div class="span8 offset2">
 				{{ Markup(post.content_html) }}
       </div>
-      <div class="hidden" id="{{ post.id }}">{{ post.content_raw }}</div>
+      <div class="hidden" id="{{ post.id }}raw">{{ Markup(post.content_raw) }}</div>
     </div>
     {% endfor %}
     <div class="row">
@@ -25,4 +25,15 @@
         </form>
       </div>
     </div>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('a.quote').click(function() {
+        var $content_raw = $('#' + this.id + 'raw').html();
+        $('#post-body').val($('#post-body').val() + $content_raw);
+    });
+  });
+</script>
 {% endblock %}
