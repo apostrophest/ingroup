@@ -7,14 +7,14 @@
     <div class="row">
       <div class="post-header span8 offset2">
         <p>{{ post.author.name }} <span class="timestamp">{{ post.get_localized_datetime() }}</span></p>
-        <a class="quote" id="{{ post.id }}"><p class="quote-button">Q</p></a>
+        <a class="quote" id="{{ post.id }}" name="{{ post.author.name }}"><p class="quote-button">Q</p></a>
       </div>
     </div>
     <div class="row">
       <div class="span8 offset2">
 				{{ Markup(post.content_html) }}
       </div>
-      <div class="hidden" id="{{ post.id }}raw">{{ Markup(post.content_raw) }}</div>
+      <div class="hidden" id="{{ post.id }}raw">{{ post.content_raw }}</div>
     </div>
     {% endfor %}
     <div class="row">
@@ -28,11 +28,25 @@
 {% endblock %}
 
 {% block script %}
-<script type="text/javascript">
-  $(document).ready(function() {
+<script type="text/javascript;version=1.7">
+    String.prototype.unescapeHtml = function () {
+        var temp = document.createElement("div");
+        temp.innerHTML = this;
+        var result = temp.childNodes[0].nodeValue;
+        temp.removeChild(temp.firstChild);
+        return result;
+    }
+
+    $(document).ready(function() {
     $('a.quote').click(function() {
         var $content_raw = $('#' + this.id + 'raw').html();
-        $('#post-body').val($('#post-body').val() + $content_raw);
+        var $new_quote_poop = ["> ###### _" + this.name + " said:_"];
+        $.each($content_raw.split('\n'), function(index, line) {
+            $new_quote_poop.push(">" + line);
+        });
+
+        var $new_quote = $new_quote_poop.join('\n');
+        $('#post-body').val($('#post-body').val() + $new_quote.unescapeHtml());
     });
   });
 </script>
