@@ -1,5 +1,7 @@
 from models import Forum
 
+def create_forum(session, name, description):
+    session.add(Forum(name, description))
 
 def mock_data(session):
     data = [

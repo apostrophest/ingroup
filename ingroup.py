@@ -5,6 +5,7 @@ from flask import Markup
 import pytz
 
 from database import db, create_flask_app
+import prefs
 
 app = create_flask_app()
 login_manager = LoginManager()
@@ -18,12 +19,17 @@ login_manager.login_view = 'login'
 login_manager.session_protection = 'strong'
 
 
-@app.route("/")
+@app.route("/", methods=['POST', 'GET'])
 @login_required
 def forum_list_view():
     forum_list = forums.forum_list(db.session)
     applicants = users.get_applicants(db.session)
-    return render_template('forum_list.html', forums=forum_list, num_applicants=len(applicants))
+    if request.method == 'GET':
+        return render_template('forum_list.html', forums=forum_list, num_applicants=len(applicants))
+    elif request.method == 'POST':
+        forums.create_forum(db.session, request.form['create-forum-name'], request.form['create-forum-description'])
+        db.session.commit()
+        return redirect(url_for('forum_list_view'))
 
 
 @app.route("/<int:forum_id>")
@@ -43,11 +49,14 @@ def thread_view(thread_id):
     elif request.method == 'POST':
         post = posts.make_post(db.session, current_user, thread_id, request.form['post-body'])
         db.session.commit()
-        return redirect(url_for('.thread_view', thread_id=thread_id, _anchor=post.id))
+        return redirect(url_for('thread_view', thread_id=thread_id, _anchor=post.id))
 
-@app.route('/user/<int:uid>', methods=['POST', 'GET'])
+
+@app.route('/user/<int:uid>', defaults={'uid': 0}, methods=['POST', 'GET'])
 @login_required
 def user_profile(uid):
+    if not uid:
+        uid = current_user.id
     user = users.user_loader(uid)
     if user is not None:
         if request.method == 'POST':
@@ -55,6 +64,7 @@ def user_profile(uid):
             user.display_name = request.form['profile-displayname']
             db.session.commit()
         return render_template('profile.html', user=user, timezones=pytz.common_timezones)
+
 
 @app.route('/applicants', methods=['GET', 'POST'])
 @login_required
@@ -65,15 +75,17 @@ def applicants():
     elif request.method == 'POST':
         if request.form['applicant-accept']:
             users.accept_applicant(db.session, request.form['applicant-accept'], current_user)
-            return redirect('/applicants')
+            return redirect(url_for('applicants'))
         elif request.form['applicant-reject']:
             users.reject_applicant(db.session, request.form['applicant-reject'])
-            return redirect('/applicants')
+            return redirect(url_for('applicants'))
+
 
 @app.route("/setup.py")
 def remote_setup_access():
     # Refuse to serve setup script remotely
     return render_template('error.html', type=404, message='')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -84,24 +96,23 @@ def login():
             user = users.valid_credentials(db.session, request.form['login-username'], request.form['login-password'])
             if user is not None:
                 login_user(user, remember=True)
-                print current_user.is_authenticated()
-                return redirect('/')
+                return redirect(url_for('forum_list_view'))
             else:
                 flash(u'Login failed')
-                return redirect('/login')
+                return redirect(url_for('login'))
         elif 'apply-username' in request.form:
             user = users.create_user(db.session, request.form['apply-username'], request.form['apply-password'], request.form['apply-email'], request.form['apply-reason'])
             if user is None:
                 flash(u'Username "%s" is already taken.' % request.form['apply-username'])
-                return redirect('/login')
+                return redirect(url_for('login'))
             else:
                 flash(u'Your application has been sent.')
-                return redirect('/login')
+                return redirect(url_for('login'))
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
-    return redirect('/')
+    return redirect(url_for('forum_list_view'))
 
 
 if __name__ == '__main__':

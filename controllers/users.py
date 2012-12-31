@@ -17,7 +17,6 @@ def valid_credentials(session, username, password):
     user = session.query(User).filter(User.name==username).first()
     if user is not None:
         if bcrypt.hashpw(password, user.password) == user.password and user.is_active():
-            print '=== VALIDATED ==='
             return user
     return None
 
@@ -51,15 +50,18 @@ def get_applicants(session):
     return session.query(Applicant).all()
 
 def accept_applicant(session, applicant_id, accepter):
-    # Set applicant approved status to True
-    # Remove applicant row
+    applicant = session.query(Applicant).filter(Applicant.id==applicant_id).first()
+    applicant.user.approved = True
+    session.delete(applicant)
+    session.commit()
     # TODO: send email to applicant
-    pass
 
 def reject_applicant(session, applicant_id):
-    # Remove applicant row
+    applicant = session.query(Applicant).filter(Applicant.id==applicant_id).first()
+    session.delete(applicant.user)
+    session.delete(applicant)
+    session.commit()
     # TODO: sent email to applicant
-    pass
 
 
 def mock_data(session):
@@ -87,7 +89,4 @@ def token_loader(token):
 
 def user_loader(uid):
     user = User.query.filter(User.id==int(uid)).first()
-    print "User: auth: {0}, active: {1}, anon: {2}, id: {3}, get_token: {4}, stored_token: {5}".format(
-        user.is_authenticated(), user.is_active(), user.is_anonymous(), user.get_id(), user.get_auth_token(), user.token
-    )
     return user

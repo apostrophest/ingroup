@@ -1,12 +1,15 @@
 import os
 import sys
 import argparse
+import getpass
 
 import bcrypt
 
 parser = argparse.ArgumentParser(description='Set up an ingroup install.')
 mocker = parser.add_subparsers(dest='opt')
+producer = parser.add_subparsers(dest='opt')
 mocker.add_parser('mock')
+producer.add_parser('production')
 #parser.add_argument(dest='mock', action='store_true', default=False,
 #                    help='Set up the install with mock data rather than a clean install.')
 
@@ -46,9 +49,26 @@ with app.test_request_context():
         db.session.commit()
 
         print 'Mock data installed...'
-    else:
+    elif args.opt == 'production':
         # Do a real install...
-        # Don't know what that will look like yet.
-        print 'Note: Tables are empty without mock data.'
+        # Don't know what that will look like yet?
+        print 'Create a user'
+        print '-------------'
+        name = raw_input('Name: ')
+        try:
+            password = getpass.getpass()
+        except getpass.GetPassWarning:
+            print '***WARNING: Password may be visible in the terminal!'
+            password = getpass.getpass()
+        email = raw_input('Email: ')
+
+        user = users.create_user(db.session, name, password, email, reason=None)
+        user.approved = True
+        db.session.delete(users.get_applicants(db.session))
+        db.session.commit()
+        print 'User successfully created.'
+    else:
+        # Don't add any defaults to the database.
+        print 'Note: Tables are empty without data.'
 
 print 'Done.'

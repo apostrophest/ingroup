@@ -1,0 +1,1 @@
+from ingroup import app as application
