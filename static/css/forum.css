@@ -1,19 +1,23 @@
 .post-header {
-    margin-top:1.4em;
+  margin-top:1.4em;
+  border-bottom:1px solid #222222;
 }
 
-.post-header p {
-    font-weight:bold;
-    font-size:120%;
-    padding-bottom:2px;
-    border-bottom:1px solid #222222;
+.post {
+  padding:0.8em 0.8em 0.8em 0.8em;
 }
 
-.timestamp {
-    font-weight:normal;
-    font-size:75%;
+#post-author {
+  font-weight:bold;
+  font-size:120%;
 }
 
-.quote-button {
-    font-size:150%;
+#post-timestamp {
+  font-weight:normal;
+  font-size:75%;
+}
+
+#post-operations {
+  font-size:150%;
+  text-align:right;
 }
