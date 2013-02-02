@@ -15,11 +15,12 @@
         </div>
     </div>
     {% endfor %}
+    <hr />
     <div class="row">
       <div class="span8 offset2">
           <form action="" method="post" id="form-create-forum">
-              <input type="text" id="create-forum-name" size="50" maxlength="50" />
-              <input type="text" id="create-forum-description" size="100" maxlength="100" />
+              <input type="text" id="create-forum-name" name="create-forum-name" size="50" maxlength="50" />
+              <input type="text" id="create-forum-description" name="create-forum-description" size="100" maxlength="100" />
               <button type="submit" id="create-forum">create</button>
           </form>
       </div>

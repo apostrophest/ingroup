@@ -22,9 +22,9 @@ login_manager.session_protection = 'strong'
 @app.route("/", methods=['POST', 'GET'])
 @login_required
 def forum_list_view():
-    forum_list = forums.forum_list(db.session)
-    applicants = users.get_applicants(db.session)
     if request.method == 'GET':
+        forum_list = forums.forum_list(db.session)
+        applicants = users.get_applicants(db.session)
         return render_template('forum_list.html', forums=forum_list, num_applicants=len(applicants))
     elif request.method == 'POST':
         forums.create_forum(db.session, request.form['create-forum-name'], request.form['create-forum-description'])
@@ -32,11 +32,18 @@ def forum_list_view():
         return redirect(url_for('forum_list_view'))
 
 
-@app.route("/<int:forum_id>")
+@app.route("/<int:forum_id>", methods=['POST', 'GET'])
 @login_required
 def thread_list_view(forum_id):
-    thread_list = threads.thread_list(db.session, forum_id)
-    return render_template('thread_list.html', threads=thread_list)
+    if request.method == 'GET':
+        forum = forums.forum_from_id(db.session, forum_id)
+        thread_list = threads.thread_list(db.session, forum_id)
+        return render_template('thread_list.html', forum=forum, threads=thread_list)
+    elif request.method == 'POST':
+        thread_id, post_id = threads.post_thread(db.session, forum_id, request.form['post-thread-title'], request.form['post-thread-content'], current_user)
+        db.session.commit()
+        return redirect(url_for('thread_view', thread_id=thread_id, _anchor=post_id))
+
 
 
 @app.route("/thread/<int:thread_id>", methods=['POST', 'GET'])
@@ -73,12 +80,14 @@ def applicants():
     if request.method == 'GET':
         return render_template('applicants.html', applicants=applicants)
     elif request.method == 'POST':
-        if request.form['applicant-accept']:
-            users.accept_applicant(db.session, request.form['applicant-accept'], current_user)
+        if 'applicant-accept' in request.form:
+            users.accept_applicant(db.session, int(request.form['applicant-accept']), current_user)
             return redirect(url_for('applicants'))
-        elif request.form['applicant-reject']:
-            users.reject_applicant(db.session, request.form['applicant-reject'])
+        elif 'applicant-reject' in request.form:
+            users.reject_applicant(db.session, int(request.form['applicant-reject']))
             return redirect(url_for('applicants'))
+        else:
+            return redirect(url_for('user_profile'))
 
 
 @app.route("/setup.py")

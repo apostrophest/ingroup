@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
+    <div class="row">
+        <div class="span8 offset2">
+            <h2>{{ forum.title }}</h2>
+            <h4>{{ forum.subtitle }}</h4>
+        </div>
+    </div>
     {% for thread in threads %}
     <div class="row">
         <div class="span6 offset2">
@@ -15,4 +21,14 @@
         </div>
     </div>
     {% endfor %}
+    <hr />
+    <div class="row">
+        <div class="span8 offset2">
+            <form action="" method="post" id="form-post-thread">
+                <input type="text" id="post-thread-title" name="post-thread-title" size="50" maxlength="50" /><br/>
+                <textarea id="post-thread-content" name="post-thread-content" rows="4" maxlength="5000" required="true"></textarea>
+                <button type="submit" id="post-thread">post</button>
+            </form>
+        </div>
+    </div>
 {% endblock %}

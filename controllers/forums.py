@@ -3,6 +3,9 @@ from models import Forum
 def create_forum(session, name, description):
     session.add(Forum(name, description))
 
+def forum_from_id(session, forum_id):
+    return session.query(Forum).filter(Forum.id==forum_id).one()
+
 def mock_data(session):
     data = [
         {'title': 'Announcements',

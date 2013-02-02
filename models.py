@@ -60,6 +60,11 @@ class Thread(db.Model):
 
     posts = db.relationship('Post', backref='thread', lazy='dynamic')
 
+    def __init__(self, forum_id, title , author_id):
+        self.title = title
+        self.forum_id = forum_id
+        self.author_id = author_id
+
 class Forum(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
@@ -81,7 +86,7 @@ class Applicant(db.Model):
     inviter = db.relationship('User', foreign_keys=inviter_id)
 
     def __repr__(self):
-        return u'<Applicant id={0:>s}, user={1:>r}, reason={2:>s}>'.format(str(self.id), self.user, self.reason)
+        return u'<Applicant id={0:d}, user={1!r}, reason={2}>'.format(self.id, self.user, self.reason)
 
 
 LastRead = db.Table('last_read',
