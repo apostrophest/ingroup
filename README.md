@@ -12,8 +12,9 @@ Current Python dependencies
 * Flask
 * Flask-SQLAlchemy
 * flask-login
-* pybcrypt
-* python-markdown
+* py-bcrypt
+* Markdown
+* pytz
 
 Current HTML/CSS/JS dependencies
 --------------------------------
