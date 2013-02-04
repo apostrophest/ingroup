@@ -6,12 +6,7 @@ import getpass
 import bcrypt
 
 parser = argparse.ArgumentParser(description='Set up an ingroup install.')
-mocker = parser.add_subparsers(dest='opt')
-producer = parser.add_subparsers(dest='opt')
-mocker.add_parser('mock')
-producer.add_parser('production')
-#parser.add_argument(dest='mock', action='store_true', default=False,
-#                    help='Set up the install with mock data rather than a clean install.')
+parser.add_argument(dest='opt', type=str, choices=('mock', 'production'), help='Deployment environment. mock: Produces random test data. production: Sets up a blank forum.')
 
 args = parser.parse_args()
 
