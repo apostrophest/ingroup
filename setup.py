@@ -59,7 +59,7 @@ with app.test_request_context():
 
         user = users.create_user(db.session, name, password, email, reason=None)
         user.approved = True
-        db.session.delete(users.get_applicants(db.session))
+        db.session.delete(users.get_applicants(db.session)[0])
         db.session.commit()
         print 'User successfully created.'
     else:
