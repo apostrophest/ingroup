@@ -17,7 +17,7 @@
         </div>
 
         <div class="span2">
-            <h6>{{ thread.author.name }}</h6>
+           <h6>{# {{ '{0} @ {1}'|format(thread.last_post.author.name, thread.last_post.local_time) }} #}</h6>
         </div>
     </div>
     {% endfor %}

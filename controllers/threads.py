@@ -1,28 +1,38 @@
 from random import choice
 
+from sqlalchemy.sql.expression import desc
+
 import prefs
 from models import Thread
 from posts import make_post
 
 
 def thread_list(session, forum_id, number=prefs.THREADS_PER_PAGE, page=None):
-    return session.query(Thread).filter_by(forum_id=forum_id).all()
+    threads = session.query(Thread).filter_by(forum_id=forum_id)[(page-1)*number:page*number]
+    return threads
 
 
 def thread_from_id(session, thread_id):
     return session.query(Thread).filter_by(id=thread_id).first()
 
 def post_thread(session, forum_id, title, content, author):
-    new_thread_id = create_thread(session, forum_id, title, author.id)
-    new_post = make_post(session, author, new_thread_id, content)
+    new_thread = create_thread(session, forum_id, title, author.id)
+    new_post = make_post(session, author, new_thread.id, content)
+    new_thread.last_post_id = new_post.id
     session.flush()
-    return new_thread_id, new_post.id
+    return new_thread.id, new_post.id
 
 def create_thread(session, forum_id, title, author_id):
     new_thread = Thread(forum_id, title, author_id)
     session.add(new_thread)
     session.flush()
-    return new_thread.id
+    return new_thread
+
+def register_post_in_thread(session, post, thread_id):
+    thread = thread_from_id(session, thread_id)
+    thread.replies += 1
+    thread.last_post_id = post.id
+
 
 def mock_data(session):
     global threads

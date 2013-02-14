@@ -31,13 +31,13 @@ def forum_list_view():
         db.session.commit()
         return redirect(url_for('forum_list_view'))
 
-
-@app.route("/<int:forum_id>", methods=['POST', 'GET'])
+@app.route("/<int:forum_id>", defaults={'page': 1}, methods=['POST', 'GET'])
+@app.route("/<int:forum_id>/<int:page>", methods=['POST', 'GET'])
 @login_required
-def thread_list_view(forum_id):
+def thread_list_view(forum_id, page):
     if request.method == 'GET':
         forum = forums.forum_from_id(db.session, forum_id)
-        thread_list = threads.thread_list(db.session, forum_id)
+        thread_list = threads.thread_list(db.session, forum_id, page=page)
         return render_template('thread_list.html', forum=forum, threads=thread_list)
     elif request.method == 'POST':
         thread_id, post_id = threads.post_thread(db.session, forum_id, request.form['post-thread-title'], request.form['post-thread-content'], current_user)
@@ -55,6 +55,7 @@ def thread_view(thread_id):
         return render_template('thread_view.html', posts=posts_list, thread=thread, Markup=Markup)
     elif request.method == 'POST':
         post = posts.make_post(db.session, current_user, thread_id, request.form['post-body'])
+        threads.register_post_in_thread(db.session, post, thread_id)
         db.session.commit()
         return redirect(url_for('thread_view', thread_id=thread_id, _anchor=post.id))
 
@@ -112,7 +113,7 @@ def login():
         elif 'apply-username' in request.form:
             user = users.create_user(db.session, request.form['apply-username'], request.form['apply-password'], request.form['apply-email'], request.form['apply-reason'])
             if user is None:
-                flash(u'Username "%s" is already taken.' % request.form['apply-username'])
+                flash(u'Username "{0}" is already taken.'.format(request.form['apply-username']))
                 return redirect(url_for('login'))
             else:
                 flash(u'Your application has been sent.')

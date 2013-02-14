@@ -15,7 +15,7 @@ class User(db.Model):
     approved = db.Column(db.Boolean())
 
     posts = db.relationship('Post', backref='author', lazy='dynamic')
-    threads = db.relationship('Thread', backref='author', lazy='dynamic')
+    threads = db.relationship('Thread', lazy='dynamic')
 
     def is_authenticated(self):
         return True
@@ -45,7 +45,8 @@ class Post(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     thread_id = db.Column(db.Integer, db.ForeignKey('thread.id'))
 
-    def get_localized_datetime(self):
+    @property
+    def local_time(self):
         if self.time is not None:
             return self.time.strftime("%Y-%m-%d %H:%M")
         return None
@@ -56,7 +57,9 @@ class Thread(db.Model):
     replies = db.Column(db.Integer)
 
     forum_id = db.Column(db.Integer, db.ForeignKey('forum.id'))
+
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    author = db.relationship('User', foreign_keys=[author_id], uselist=False)
 
     posts = db.relationship('Post', backref='thread', lazy='dynamic')
 
@@ -64,6 +67,12 @@ class Thread(db.Model):
         self.title = title
         self.forum_id = forum_id
         self.author_id = author_id
+        self.replies = 0
+
+    def __repr__(self):
+        return u'<Thread id={0:d}, title={1}, forum={2}, author={3!r}>'.format(
+            self.id, self.title, self.forum.title, self.author
+        )
 
 class Forum(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -75,6 +84,9 @@ class Forum(db.Model):
     def __init__(self, title, subtitle):
         self.title = title
         self.subtitle = subtitle
+
+    def __repr__(self):
+        return u'<Forum id={0:d}, title={1}, subtitle={2}>'.format(self.id, self.title, self.subtitle)
 
 class Applicant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
