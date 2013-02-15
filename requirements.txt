@@ -9,3 +9,4 @@ argparse==1.2.1
 py-bcrypt==0.2
 pytz==2012h
 wsgiref==0.1.2
+html5lib==0.95

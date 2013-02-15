@@ -7,31 +7,30 @@ from models import Thread
 from posts import make_post
 
 
-def thread_list(session, forum_id, number=prefs.THREADS_PER_PAGE, page=None):
-    threads = session.query(Thread).filter_by(forum_id=forum_id)[(page-1)*number:page*number]
+def thread_list(session, number=prefs.THREADS_PER_PAGE, page=None):
+    threads = session.query(Thread)[(page-1)*number:page*number]
     return threads
 
 
 def thread_from_id(session, thread_id):
     return session.query(Thread).filter_by(id=thread_id).first()
 
-def post_thread(session, forum_id, title, content, author):
-    new_thread = create_thread(session, forum_id, title, author.id)
+def post_thread(session, title, content, author):
+    new_thread = create_thread(session, title)
     new_post = make_post(session, author, new_thread.id, content)
     new_thread.last_post_id = new_post.id
     session.flush()
     return new_thread.id, new_post.id
 
-def create_thread(session, forum_id, title, author_id):
-    new_thread = Thread(forum_id, title, author_id)
+def create_thread(session, title):
+    new_thread = Thread(title)
     session.add(new_thread)
     session.flush()
     return new_thread
 
 def register_post_in_thread(session, post, thread_id):
     thread = thread_from_id(session, thread_id)
-    thread.replies += 1
-    thread.last_post_id = post.id
+    thread.last_post_time = post.time
 
 
 def mock_data(session):

@@ -15,7 +15,6 @@ class User(db.Model):
     approved = db.Column(db.Boolean())
 
     posts = db.relationship('Post', backref='author', lazy='dynamic')
-    threads = db.relationship('Thread', lazy='dynamic')
 
     def is_authenticated(self):
         return True
@@ -54,39 +53,16 @@ class Post(db.Model):
 class Thread(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
-    replies = db.Column(db.Integer)
-
-    forum_id = db.Column(db.Integer, db.ForeignKey('forum.id'))
-
-    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    author = db.relationship('User', foreign_keys=[author_id], uselist=False)
+    last_post_time = db.Column(db.DateTime)
 
     posts = db.relationship('Post', backref='thread', lazy='dynamic')
 
-    def __init__(self, forum_id, title , author_id):
+    def __init__(self, title):
         self.title = title
-        self.forum_id = forum_id
-        self.author_id = author_id
-        self.replies = 0
 
     def __repr__(self):
-        return u'<Thread id={0:d}, title={1}, forum={2}, author={3!r}>'.format(
-            self.id, self.title, self.forum.title, self.author
-        )
+        return u'<Thread id={0:d}, title={1}>'.format(self.id, self.title)
 
-class Forum(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100))
-    subtitle = db.Column(db.String(200))
-
-    threads = db.relationship('Thread', backref='forum', lazy='dynamic')
-
-    def __init__(self, title, subtitle):
-        self.title = title
-        self.subtitle = subtitle
-
-    def __repr__(self):
-        return u'<Forum id={0:d}, title={1}, subtitle={2}>'.format(self.id, self.title, self.subtitle)
 
 class Applicant(db.Model):
     id = db.Column(db.Integer, primary_key=True)

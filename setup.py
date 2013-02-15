@@ -24,7 +24,7 @@ import prefs
 from database import db, create_flask_app
 app = create_flask_app()
 
-from controllers import users, forums, threads, posts, applicants
+from controllers import users, threads, posts, applicants
 
 
 with app.test_request_context():
@@ -36,7 +36,6 @@ with app.test_request_context():
 
     if args.opt == 'mock':
         users.mock_data(db.session)
-        forums.mock_data(db.session)
         threads.mock_data(db.session)
         posts.mock_data(db.session)
         applicants.mock_data(db.session)

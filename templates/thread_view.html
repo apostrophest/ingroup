@@ -19,7 +19,7 @@
       <div class="post span8 offset2">
 				{{ Markup(post.content_html) }}
       </div>
-      <div class="hidden" id="{{ post.id }}raw">{{ post.content_raw }}</div>
+      <div hidden="true" id="{{ post.id }}raw">{{ post.content_raw }}</div>
     </div>
     {% endfor %}
     <hr />

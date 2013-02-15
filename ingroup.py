@@ -5,13 +5,12 @@ from flask import Markup
 import pytz
 
 from database import db, create_flask_app
-import prefs
 
 app = create_flask_app()
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-from controllers import forums, threads, posts, users
+from controllers import threads, posts, users
 
 login_manager.token_loader(users.token_loader)
 login_manager.user_loader(users.user_loader)
@@ -19,31 +18,17 @@ login_manager.login_view = 'login'
 login_manager.session_protection = 'strong'
 
 
-@app.route("/", methods=['POST', 'GET'])
+@app.route("/", defaults={'page': 1}, methods=['POST', 'GET'])
+@app.route("/<int:page>", methods=['POST', 'GET'])
 @login_required
-def forum_list_view():
+def thread_list_view(page):
     if request.method == 'GET':
-        forum_list = forums.forum_list(db.session)
-        applicants = users.get_applicants(db.session)
-        return render_template('forum_list.html', forums=forum_list, num_applicants=len(applicants))
+        thread_list = threads.thread_list(db.session, page=page)
+        return render_template('thread_list.html', threads=thread_list)
     elif request.method == 'POST':
-        forums.create_forum(db.session, request.form['create-forum-name'], request.form['create-forum-description'])
-        db.session.commit()
-        return redirect(url_for('forum_list_view'))
-
-@app.route("/<int:forum_id>", defaults={'page': 1}, methods=['POST', 'GET'])
-@app.route("/<int:forum_id>/<int:page>", methods=['POST', 'GET'])
-@login_required
-def thread_list_view(forum_id, page):
-    if request.method == 'GET':
-        forum = forums.forum_from_id(db.session, forum_id)
-        thread_list = threads.thread_list(db.session, forum_id, page=page)
-        return render_template('thread_list.html', forum=forum, threads=thread_list)
-    elif request.method == 'POST':
-        thread_id, post_id = threads.post_thread(db.session, forum_id, request.form['post-thread-title'], request.form['post-thread-content'], current_user)
+        thread_id, post_id = threads.post_thread(db.session, request.form['post-thread-title'], request.form['post-thread-content'], current_user)
         db.session.commit()
         return redirect(url_for('thread_view', thread_id=thread_id, _anchor=post_id))
-
 
 
 @app.route("/thread/<int:thread_id>", methods=['POST', 'GET'])
@@ -106,7 +91,7 @@ def login():
             user = users.valid_credentials(db.session, request.form['login-username'], request.form['login-password'])
             if user is not None:
                 login_user(user, remember=True)
-                return redirect(url_for('forum_list_view'))
+                return redirect(url_for('thread_list_view'))
             else:
                 flash(u'Login failed')
                 return redirect(url_for('login'))
@@ -118,11 +103,12 @@ def login():
             else:
                 flash(u'Your application has been sent.')
                 return redirect(url_for('login'))
+
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('forum_list_view'))
+    return redirect(url_for('thread_list_view'))
 
 
 if __name__ == '__main__':

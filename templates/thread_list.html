@@ -2,22 +2,13 @@
 {% block content %}
     <div class="row">
         <div class="span8 offset2">
-            <h2>{{ forum.title }}</h2>
-            <h4>{{ forum.subtitle }}</h4>
+            <h2>ingroup</h2>
         </div>
     </div>
     {% for thread in threads %}
     <div class="row">
         <div class="span6 offset2">
         <a href="{{ url_for('thread_view', thread_id=thread.id) }}"><h5>{{thread.title}}</h5></a>
-        </div>
-
-        <div class="span2">
-          <p>{{thread.replies}}</p>
-        </div>
-
-        <div class="span2">
-           <h6>{# {{ '{0} @ {1}'|format(thread.last_post.author.name, thread.last_post.local_time) }} #}</h6>
         </div>
     </div>
     {% endfor %}
