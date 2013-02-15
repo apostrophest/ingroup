@@ -63,26 +63,6 @@ def reject_applicant(session, applicant_id, rejecter):
     # TODO: sent email to applicant
 
 
-def mock_data(session):
-    data = [
-        {'password': bcrypt.hashpw(u'one', bcrypt.gensalt()), 'timezone': 'America/New York',
-            'name': u'one', 'display_name': u'one',
-            'avatar': u'one.png', 'approved': True, 'email': u'one@one.com'},
-        {'password': bcrypt.hashpw(u'two', bcrypt.gensalt()), 'timezone': 'America/New York',
-            'name': u'two', 'display_name': u'two',
-            'avatar': u'two.png', 'approved': True, 'email': u'two@two.com'},
-        {'password': bcrypt.hashpw(u'three', bcrypt.gensalt()), 'timezone': 'America/New York',
-            'name': u'three', 'display_name': u'three',
-            'avatar': u'three.png', 'approved': True, 'email': u'three@three.com'},
-        {'password': bcrypt.hashpw(u'four', bcrypt.gensalt()), 'timezone': 'America/New York',
-            'name': u'four', 'display_name': u'four',
-            'avatar': u'four.png', 'approved': True, 'email': u'four@four.com'}
-        ]
-
-    for datum in data:
-        datum['token'] = make_secure_token(datum['name'], datum['password'])
-        session.add(User(**datum))
-
 def token_loader(token):
     return User.query.filter(User.token==token).first()
 

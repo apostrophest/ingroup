@@ -1,12 +1,10 @@
-import os
-import sys
 import argparse
 import getpass
 
 import bcrypt
 
 parser = argparse.ArgumentParser(description='Set up an ingroup install.')
-parser.add_argument(dest='opt', type=str, choices=('mock', 'production'), help='Deployment environment. mock: Produces random test data. production: Sets up a blank forum.')
+parser.add_argument(dest='opt', type=str, choices=('production',), help='Deployment environment. production: Sets up a blank forum.')
 
 args = parser.parse_args()
 
@@ -20,12 +18,10 @@ except IOError:
 
 print 'Cleaning up...'
 
-import prefs
 from database import db, create_flask_app
 app = create_flask_app()
 
-from controllers import users, threads, posts, applicants
-
+from controllers import users
 
 with app.test_request_context():
     db.drop_all()
@@ -34,16 +30,7 @@ with app.test_request_context():
 
     print 'Tables created...'
 
-    if args.opt == 'mock':
-        users.mock_data(db.session)
-        threads.mock_data(db.session)
-        posts.mock_data(db.session)
-        applicants.mock_data(db.session)
-
-        db.session.commit()
-
-        print 'Mock data installed...'
-    elif args.opt == 'production':
+    if args.opt == 'production':
         # Do a real install...
         # Don't know what that will look like yet?
         print 'Create a user'

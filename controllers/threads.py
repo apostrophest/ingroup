@@ -1,4 +1,3 @@
-from random import choice
 
 from sqlalchemy.sql.expression import desc
 
@@ -20,20 +19,3 @@ def create_thread(session, title):
     session.add(new_thread)
     session.flush()
     return new_thread
-
-
-def mock_data(session):
-    global threads
-    forum_ids = [1, 2, 3]
-    thread_titles = [
-        'hello 20XX', 'Beekeeping', 'MiKKKro$fot LoseBlows', 'my story from band camp',
-        'The system is going down for maintenance now.', 'girl porblems',
-        'A comprehensive treatise concerning my support for Willard Romney']
-    author_ids = [1, 2, 3, 4]
-
-    for x in xrange(20):
-        session.add(Thread(**{
-            'forum_id': choice(forum_ids),
-            'title': choice(thread_titles),
-            'author_id': choice(author_ids)}))
-
