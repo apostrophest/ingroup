@@ -2,14 +2,17 @@
 {% block content %}
     <div class="row">
         <div class="span8 offset2">
-            <h2>ingroup</h2>
+            <h2><a href="{{ url_for('thread_list_view') }}">ingroup</a></h2>
         </div>
     </div>
+    <hr/>
     {% for thread in threads %}
     <div class="row">
         <div class="span6 offset2">
         <a href="{{ url_for('thread_view', thread_id=thread.id) }}"><h5>{{thread.title}}</h5></a>
         </div>
+        <div class="span2">&hellip;</div>
+        <div class="span2">{{ thread.posts }}</div>
     </div>
     {% endfor %}
     <hr />

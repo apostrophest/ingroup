@@ -1,7 +1,11 @@
 __author__ = 'Stephen Thompson <stephen@chomadoma.net>'
 
-from database import db
 from flask.ext.login import make_secure_token
+import pytz
+
+from database import db
+
+utc_tz = pytz.timezone('UTC')
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -32,33 +36,32 @@ class User(db.Model):
         return make_secure_token(self.name, self.password)
 
     def __repr__(self):
-        return u"<User: id={0:>s}, name={1:>s}, display_name={2:>s}, email={3:>s}, approved={4:>s}>".format(
-            str(self.id), self.name, self.display_name, self.email, repr(bool(self.approved)))
+        return u"<User: id={0:>s}, name={1:>s}, display_name={2:>s}, email={3:>s}, approved={4!r}>".format(
+            str(self.id), self.name, self.display_name, self.email, bool(self.approved))
 
 class Post(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    number = db.Column(db.Integer, primary_key=True)
+    thread_id = db.Column(db.Integer, db.ForeignKey('thread.id'), primary_key=True)
     time = db.Column(db.DateTime)
     content_raw = db.Column(db.Text)
     content_html = db.Column(db.Text)
 
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    thread_id = db.Column(db.Integer, db.ForeignKey('thread.id'))
 
-    @property
-    def local_time(self):
+    def local_time(self, tz):
         if self.time is not None:
-            return self.time.strftime("%Y-%m-%d %H:%M")
+            return utc_tz.localize(self.time).astimezone(tz).strftime("%Y-%m-%d %H:%M")
         return None
 
 class Thread(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
     last_post_time = db.Column(db.DateTime)
-
-    posts = db.relationship('Post', backref='thread', lazy='dynamic')
+    posts = db.Column(db.Integer)
 
     def __init__(self, title):
         self.title = title
+        self.posts = 0
 
     def __repr__(self):
         return u'<Thread id={0:d}, title={1}>'.format(self.id, self.title)
@@ -80,5 +83,5 @@ class Applicant(db.Model):
 LastRead = db.Table('last_read',
                 db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
                 db.Column('thread_id', db.Integer, db.ForeignKey('thread.id')),
-                db.Column('post_id', db.Integer, db.ForeignKey('post.id'))
+                db.Column('post_number', db.Integer, db.ForeignKey('post.number'))
             )

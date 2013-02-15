@@ -52,11 +52,10 @@ def get_applicants(session):
 def accept_applicant(session, applicant_id, accepter):
     applicant = session.query(Applicant).filter(Applicant.id==applicant_id).first()
     applicant.user.approved = True
-    session.delete(applicant)
     session.commit()
     # TODO: send email to applicant
 
-def reject_applicant(session, applicant_id):
+def reject_applicant(session, applicant_id, rejecter):
     applicant = session.query(Applicant).filter(Applicant.id==applicant_id).first()
     session.delete(applicant.user)
     session.delete(applicant)

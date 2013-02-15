@@ -26,9 +26,10 @@ def thread_list_view(page):
         thread_list = threads.thread_list(db.session, page=page)
         return render_template('thread_list.html', threads=thread_list)
     elif request.method == 'POST':
-        thread_id, post_id = threads.post_thread(db.session, request.form['post-thread-title'], request.form['post-thread-content'], current_user)
+        new_thread = threads.create_thread(db.session, request.form['post-thread-title'])
+        new_post = posts.make_post(db.session, current_user, new_thread, request.form['post-thread-content'])
         db.session.commit()
-        return redirect(url_for('thread_view', thread_id=thread_id, _anchor=post_id))
+        return redirect(url_for('thread_view', thread_id=new_thread.id, _anchor=new_post.number))
 
 
 @app.route("/thread/<int:thread_id>", methods=['POST', 'GET'])
@@ -37,12 +38,12 @@ def thread_view(thread_id):
     if request.method == 'GET':
         posts_list = posts.post_list(db.session, thread_id)
         thread = threads.thread_from_id(db.session, thread_id)
-        return render_template('thread_view.html', posts=posts_list, thread=thread, Markup=Markup)
+        return render_template('thread_view.html', posts=posts_list, thread=thread, Markup=Markup, user_tz=pytz.timezone(current_user.timezone))
     elif request.method == 'POST':
-        post = posts.make_post(db.session, current_user, thread_id, request.form['post-body'])
-        threads.register_post_in_thread(db.session, post, thread_id)
+        thread = threads.thread_from_id(db.session, thread_id)
+        new_post = posts.make_post(db.session, current_user, thread, request.form['post-body'])
         db.session.commit()
-        return redirect(url_for('thread_view', thread_id=thread_id, _anchor=post.id))
+        return redirect(url_for('thread_view', thread_id=thread.id, _anchor=new_post.number))
 
 
 @app.route('/user/<int:uid>', defaults={'uid': 0}, methods=['POST', 'GET'])
@@ -74,12 +75,6 @@ def applicants():
             return redirect(url_for('applicants'))
         else:
             return redirect(url_for('user_profile'))
-
-
-@app.route("/setup.py")
-def remote_setup_access():
-    # Refuse to serve setup script remotely
-    return render_template('error.html', type=404, message='')
 
 
 @app.route('/login', methods=['GET', 'POST'])
