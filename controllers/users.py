@@ -2,7 +2,7 @@
 import bcrypt
 from flask.ext.login import make_secure_token
 
-from models import User, Applicant
+from models import User
 
 
 def valid_credentials(session, username, password):
@@ -20,7 +20,7 @@ def valid_credentials(session, username, password):
             return user
     return None
 
-def create_user(session, username, password, email, reason):
+def create_user(session, username, password, email):
     user = session.query(User).filter(User.name==username).first()
     if user is not None:
         return None
@@ -40,27 +40,7 @@ def create_user(session, username, password, email, reason):
         session.add(user)
         session.flush()
 
-        applicant = Applicant(user_id=user.id, reason=reason)
-        session.add(applicant)
-        session.commit()
-
         return user
-
-def get_applicants(session):
-    return session.query(Applicant).all()
-
-def accept_applicant(session, applicant_id, accepter):
-    applicant = session.query(Applicant).filter(Applicant.id==applicant_id).first()
-    applicant.user.approved = True
-    session.commit()
-    # TODO: send email to applicant
-
-def reject_applicant(session, applicant_id, rejecter):
-    applicant = session.query(Applicant).filter(Applicant.id==applicant_id).first()
-    session.delete(applicant.user)
-    session.delete(applicant)
-    session.commit()
-    # TODO: sent email to applicant
 
 
 def token_loader(token):

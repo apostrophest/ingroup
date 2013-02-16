@@ -1,23 +1,56 @@
 .post-header {
-  margin-top:1.4em;
-  border-bottom:1px solid #222222;
+  margin-top: 1.4em;
+  border-bottom: 1px solid #222222;
 }
 
 .post {
-  padding:0.8em 0.8em 0.8em 0.8em;
+  padding: 0.8em 0.8em 0.8em 0.8em;
 }
 
 #post-author {
-  font-weight:bold;
-  font-size:120%;
+  font-weight: bold;
+  font-size: 120%;
 }
 
 #post-timestamp {
-  font-weight:normal;
-  font-size:75%;
+  font-weight: normal;
+  font-size: 75%;
 }
 
 #post-operations {
-  font-size:150%;
-  text-align:right;
+  font-size: 150%;
+  text-align: right;
+}
+
+textarea#post-body, input#post-thread-title, textarea#post-thread-content {
+  width: 70%;
+}
+
+.page-header {
+  background-color: #fdfdfd;
+  border-bottom: 2px solid #e3e3e3;
+  margin-top: 0px;
+}
+
+.page-footer {
+  background-color: #fdfdfd;
+  border-top: 2px solid #e3e3e3;
+  border-bottom: 2px solid #e3e3e3;
+  padding: 0.8em 0.8em 0.8em 0.8em;
+}
+
+a.quote:hover {
+  cursor: pointer;
+}
+
+div.accepted {
+  background-color: #dff0d8;
+}
+
+div.rejected {
+  background-color: #f0dfd8;
+}
+
+div.thread-row {
+  font-size: 125%;
 }

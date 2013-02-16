@@ -1,20 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class="row">
+    <div class="row page-header">
         <div class="span8 offset2">
           <h2><a href="{{ url_for('thread_list_view') }}">ingroup</a></h2>
           <h4>{{ thread.title }}</h4>
         </div>
     </div>
-    <hr/>
     {% for post in posts %}
     <div class="row">
       <div class="post-header span8 offset2">
           <div class="row">
-              <div class="span2" id="post-author">{{ post.author.name }}</div>
+              <div class="span4" id="post-author">{{ post.author.display_name }}</div>
               <div class="span2" id="post-timestamp">{{ post.local_time(user_tz) }}</div>
-              <div class="span2 offset2" id="post-operations">
-                  <a class="quote" id="{{ post.number }}" name="{{ post.author.name }}">Q</a>
+              <div class="span2" id="post-operations">
+                  <a class="quote" id="{{ post.number }}" name="{{ post.author.display_name }}">Q</a>
               </div>
           </div>
       </div>
@@ -26,11 +25,10 @@
       <div hidden="true" id="{{ post.number }}raw">{{ post.content_raw }}</div>
     </div>
     {% endfor %}
-    <hr />
-    <div class="row">
-      <div class="span4 offset4">
+    <div class="row page-footer">
+      <div class="span10 offset2">
         <form action="" method="post" id="post-form">
-          <textarea id="post-body" name="post-body" rows="4" maxlength="5000" required="true"></textarea>
+          <textarea id="post-body" name="post-body" rows="8" maxlength="5000" required="true"></textarea>
           <button type="submit" id="post-submit" name="post-submit">post</button>
         </form>
       </div>
@@ -50,7 +48,7 @@
     $(document).ready(function() {
     $('a.quote').click(function() {
         var $content_raw = $('#' + this.id + 'raw').html();
-        var $new_quote_poop = ["> ###### _" + this.name + " said:_"];
+        var $new_quote_poop = ["> ####" + this.name + " said:"];
         $.each($content_raw.split('\n'), function(index, line) {
             $new_quote_poop.push(">" + line);
         });

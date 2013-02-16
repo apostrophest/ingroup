@@ -21,7 +21,7 @@ print 'Cleaning up...'
 from database import db, create_flask_app
 app = create_flask_app()
 
-from controllers import users
+from controllers import users, applicants
 
 with app.test_request_context():
     db.drop_all()
@@ -43,8 +43,10 @@ with app.test_request_context():
             password = getpass.getpass()
         email = raw_input('Email: ')
 
-        user = users.create_user(db.session, name, password, email, reason='ingroup creator')
-        user.approved = True
+        user = users.create_user(db.session, name, password, email)
+        applicant = applicants.create_applicant(db.session, user, 'ingroup creator')
+        db.session.flush()
+        applicants.accept_applicant(db.session, applicant.id, user)
         db.session.commit()
         print 'User successfully created.'
     else:

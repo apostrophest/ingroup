@@ -69,19 +69,41 @@ class Thread(db.Model):
 
 class Applicant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship('User', foreign_keys=user_id)
     reason = db.Column(db.String(256))
 
-    inviter_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    inviter = db.relationship('User', foreign_keys=inviter_id)
+    processor_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    processor = db.relationship('User', foreign_keys=processor_id)
+
+    result = db.Column(db.Integer)
+
+    def __init__(self, user, reason):
+        self.user = user
+        self.name = user.name
+        self.reason = reason
+        self.result = None
+        self.processor_id = None
+
+    @property
+    def approved(self):
+        if self.result is None:
+            return None
+        else:
+            return bool(self.result)
+
+    @approved.setter
+    def approved(self, result):
+        self.result = int(result)
 
     def __repr__(self):
         return u'<Applicant id={0:d}, user={1!r}, reason={2}>'.format(self.id, self.user, self.reason)
 
 
 LastRead = db.Table('last_read',
-                db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
-                db.Column('thread_id', db.Integer, db.ForeignKey('thread.id')),
-                db.Column('post_number', db.Integer, db.ForeignKey('post.number'))
+                db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+                db.Column('thread_id', db.Integer, db.ForeignKey('thread.id'), primary_key=True),
+                db.Column('post_number', db.Integer, db.ForeignKey('post.number')),
+                db.Index('user_thread_index', 'user_id', 'thread_id')
             )

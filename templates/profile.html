@@ -4,7 +4,7 @@
     <h1>Settings</h1>
     <form action="" method="post" id="profile-form">
         <label for="profile-timezone">Timezone</label>
-        <select id="profile-timezone">
+        <select id="profile-timezone" name="profile-timezone">
             {% for timezone in timezones %}
                 {% if timezone == user.timezone %}
                   <option name="{{ timezone }}" selected="true">{{ timezone }}</option>
@@ -18,5 +18,4 @@
         <button type="submit" id="profile-submit" name="profile-submit">update</button>
     </form>
   </div>
-    {% endfor %}
 {% endblock %}

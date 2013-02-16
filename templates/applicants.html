@@ -1,18 +1,35 @@
 {% extends "base.html" %}
+{% macro row_style(approved) -%}
+    {{ {none:"", true:"accepted", false:"rejected"}[approved] }}
+{%- endmacro %}
+{% macro accepted_rejected(applicant, approved) -%}
+  {% if approved is none %}
+    <form action="" method="post" id="applicant-form">
+      <button type="submit" id="applicant-accept" name="applicant-accept" value="{{ applicant.id }}">accept</button>
+      <button type="submit" id="applicant-reject" name="applicant-reject" value="{{ applicant.id }}">reject</button>
+    </form>
+  {% else %}
+    <p>{{ "approved" if approved else "rejected" }} by <strong>{{ applicant.processor.name }}</strong></p>
+  {% endif %}
+{%- endmacro %}
 {% block content %}
+    <div class="row page-header">
+        <div class="span8 offset2">
+            <h2><a href="{{ url_for('thread_list_view') }}">ingroup</a></h2>
+            <h4>applicants</h4>
+        </div>
+    </div>
     {% for applicant in applicants %}
-    <div class="row">
+    {% set approved = applicant.approved %}
+    <div class="{{ ("row", row_style(approved))|join(" ") }}">
       <div class="span2 offset2">
-          <h4>{{ applicant.user.name }}</h4>
+          <p><strong>{{ applicant.name }}</strong></p>
       </div>
-      <div class="span4 offset2">
+      <div class="span4 offset1">
           <p>{{ applicant.reason }}</p>
       </div>
       <div class="span2">
-          <form action="" method="post" id="applicant-form">
-              <button type="submit" id="applicant-accept" name="applicant-accept" value="{{ applicant.id }}">accept</button>
-              <button type="submit" id="applicant-reject" name="applicant-reject" value="{{ applicant.id }}">reject</button>
-          </form>
+        {{ accepted_rejected(applicant, approved) }}
       </div>
     </div>
     {% endfor %}
