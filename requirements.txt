@@ -7,6 +7,5 @@ SQLAlchemy==0.8.0b2
 Werkzeug==0.8.3
 argparse==1.2.1
 py-bcrypt==0.2
-pytz==2012h
+pytz==2012i
 wsgiref==0.1.2
-html5lib==0.95
