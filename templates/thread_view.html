@@ -54,7 +54,10 @@
         });
 
         var $new_quote = $new_quote_poop.join('\n');
-        $('#post-body').val($('#post-body').val() + $new_quote.unescapeHtml());
+        $new_quote = $new_quote + "\n\n";
+        var $post_body = $('#post-body');
+        $post_body.val($post_body.val() + $new_quote.unescapeHtml());
+        $post_body.focus();
     });
   });
 </script>
