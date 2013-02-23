@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+
 {% macro last_unread_link(text, thread, post_number) -%}
   {% if text != '0 new' %}
     <a href="{{ url_for('thread_view', thread_id=thread.id, _anchor=(post_number + 1)) }}">{{ text }}</a>
@@ -6,14 +7,16 @@
     {{ text }}
   {% endif %}
 {%- endmacro %}
+
 {% macro new_posts(thread) -%}
     {% if thread.id in unread_posts %}
         {{ last_unread_link('%d new'|format(thread.posts-unread_posts[thread.id]), thread, unread_posts[thread.id]) }}
     {% endif %}
 {%- endmacro %}
+
 {% block content %}
     <div class="row page-header">
-        <div class="span8 offset2">
+        <div class="span8 offset1">
             <h2><a href="{{ url_for('thread_list_view') }}">ingroup</a></h2>
             {% if num_applicants -%}
             <h4><a href="{{ url_for('applicants_view') }}">{{ num_applicants }} applicants pending</a></h4>
@@ -22,7 +25,7 @@
     </div>
     {% for thread in threads %}
     <div class="row thread-row">
-        <div class="span6 offset2">
+        <div class="span6 offset1">
         <a href="{{ url_for('thread_view', thread_id=thread.id) }}"><p>{{thread.title}}</p></a>
         </div>
         <div class="span2">{{ new_posts(thread) }}</div>
@@ -30,7 +33,7 @@
     </div>
     {% endfor %}
     <div class="row page-footer">
-        <div class="span10 offset2">
+        <div class="span11 offset1">
             <form action="" method="post" id="form-post-thread">
                 <input type="text" id="post-thread-title" name="post-thread-title" size="50" maxlength="50" /><br/>
                 <textarea id="post-thread-content" name="post-thread-content" rows="8" maxlength="5000" required="true"></textarea>

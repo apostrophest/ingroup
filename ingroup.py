@@ -43,7 +43,7 @@ def thread_view(thread_id):
             abort(404)
         thread = threads.thread_from_id(db.session, thread_id)
         #threads.mark_read(db.session, current_user, thread, posts_list[-1])
-        return render_template('thread_view.html', posts=posts_list, thread=thread, Markup=Markup, user_tz=pytz.timezone(current_user.timezone))
+        return render_template('thread_avatars.html', posts=posts_list, thread=thread, Markup=Markup, user_tz=pytz.timezone(current_user.timezone))
     elif request.method == 'POST':
         thread = threads.thread_from_id(db.session, thread_id)
         if not thread:

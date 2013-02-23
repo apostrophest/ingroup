@@ -6,27 +6,25 @@
           <h4>{{ thread.title }}</h4>
         </div>
     </div>
+
     {% for post in posts %}
-    <div class="row">
-      <div class="post-header span8 offset1">
-          <div class="row">
-              <div class="span4" id="post-author">{{ post.author.display_name }}</div>
-              <div class="span2" id="post-timestamp">{{ post.local_time(user_tz) }}</div>
-              <div class="span2" id="post-operations">
-                  <a class="quote" id="{{ post.number }}" name="{{ post.author.display_name }}">Q</a>
-              </div>
-          </div>
+    <div class="row post-header">
+      <div class="span3 offset1" id="post-author">{{ post.author.display_name }}</div>
+      <div class="span2" id="post-timestamp">{{ post.local_time(user_tz) }}</div>
+      <div class="span1" id="post-operations">
+          <a class="quote" id="{{ post.number }}" name="{{ post.author.display_name }}">Q</a>
       </div>
     </div>
+
     <div class="row">
-      <div class="post span8 offset1">
-				{{ Markup(post.content_html) }}
-      </div>
+      <!--<div class="span2" id="post-avatar"><img data-src="holder.js/120x64"></div>-->
+      <div class="span8 offset1 post">{{ Markup(post.content_html) }}</div>
       <div hidden="true" id="{{ post.number }}raw">{{ post.content_raw }}</div>
     </div>
     {% endfor %}
+
     <div class="row page-footer">
-      <div class="span10 offset1">
+      <div class="span8 offset1">
         <form action="" method="post" id="post-form">
           <textarea id="post-body" name="post-body" rows="8" maxlength="5000" required="true"></textarea>
           <button type="submit" id="post-submit" name="post-submit">post</button>

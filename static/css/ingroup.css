@@ -1,15 +1,32 @@
 .post-header {
   margin-top: 1.4em;
-  border-bottom: 1px solid #222222;
+  border-bottom: 1px solid #e3e3e3;
+}
+
+.avatar-header {
+  background-color: #fdfdfd;
 }
 
 .post {
   padding: 0.8em 0.8em 0.8em 0.8em;
 }
 
+#post-avatar {
+  padding: 2px 10px 0 10px;
+}
+
 #post-author {
   font-weight: bold;
-  font-size: 120%;
+  font-size: 100%;
+  /*
+  -moz-transform:rotate(-90deg);
+  -moz-transform-origin: top right;
+  -webkit-transform: rotate(-90deg);
+  -webkit-transform-origin: top right;
+  -o-transform: rotate(-90deg);
+  -o-transform-origin:  top right;
+  position: relative;
+  left: -100%;*/
 }
 
 #post-timestamp {
@@ -18,8 +35,7 @@
 }
 
 #post-operations {
-  font-size: 150%;
-  text-align: right;
+  font-size: 120%;
 }
 
 textarea#post-body, input#post-thread-title, textarea#post-thread-content {
