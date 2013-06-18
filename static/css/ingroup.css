@@ -1,3 +1,7 @@
+blockquote p {
+  font-size: 14px;
+}
+
 .post-header {
   margin-top: 1.4em;
   border-bottom: 1px solid #e3e3e3;

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% macro row_style(approved) -%}
+{% macro approved_string(approved) -%}
     {{ {none:"", true:"accepted", false:"rejected"}[approved] }}
 {%- endmacro %}
 {% macro accepted_rejected(applicant, approved) -%}
@@ -9,7 +9,7 @@
       <button type="submit" id="applicant-reject" name="applicant-reject" value="{{ applicant.id }}">reject</button>
     </form>
   {% else %}
-    <p>{{ "approved" if approved else "rejected" }} by <strong>{{ applicant.processor.name }}</strong></p>
+    <p><span class="{{ approved_string(approved) }}">{{ approved_string(approved) }}</span> by <strong>{{ applicant.processor.name }}</strong></p>
   {% endif %}
 {%- endmacro %}
 {% block content %}
@@ -20,8 +20,7 @@
         </div>
     </div>
     {% for applicant in applicants %}
-    {% set approved = applicant.approved %}
-    <div class="{{ ("row", row_style(approved))|join(" ") }}">
+    <div class="{{ ("row", approved_string(applicant.approved))|join(" ") }}">
       <div class="span2 offset2">
           <p><strong>{{ applicant.name }}</strong></p>
       </div>
@@ -29,7 +28,7 @@
           <p>{{ applicant.reason }}</p>
       </div>
       <div class="span2">
-        {{ accepted_rejected(applicant, approved) }}
+        {{ accepted_rejected(applicant, applicant.approved) }}
       </div>
     </div>
     {% endfor %}
