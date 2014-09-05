@@ -2,23 +2,23 @@
 {% block content %}
     <div class="row">
       <div class="span4 offset4">
-          <h1>Login</h1>
+          <h1>{{ _('Login') }}</h1>
           <form action="" method="post" id="form-login">
               <input id="login-username" type="text" autofocus="true" maxlength="30" name="login-username" size="30" required="true" />
               <input id="login-password" type="password" maxlength="50" name="login-password" size="50" required="true" />
-              <button type="submit" name="login-submit" id="login-submit">log in</button>
+              <button type="submit" name="login-submit" id="login-submit">{{ _('log in') }}</button>
           </form>
       </div>
     </div>
     <div class="row">
       <div class="span4 offset4">
-          <h1>Apply</h1>
+          <h1>{{ _('Apply') }}</h1>
           <form action="" method="post" id="form-apply">
               <input id="apply-username" type="text" maxlength="30" name="apply-username" size="30" required="true" />
               <input id="apply-password" type="password" maxlength="50" name="apply-password" size="50" required="true" />
               <input id="apply-email" type="text" maxlength="50" name="apply-email" size="50" required="true" />
               <textarea maxlength="250" id="apply-reason" name="apply-reason" required="true" rows="2"></textarea>
-              <button type="submit" name="apply-submit" id="apply-submit">apply</button>
+              <button type="submit" name="apply-submit" id="apply-submit">{{ _('apply') }}</button>
           </form>
       </div>
     </div>

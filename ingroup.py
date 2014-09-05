@@ -1,12 +1,15 @@
 from flask import render_template, redirect, request, flash, url_for, abort
 from flask.ext.login import LoginManager, login_required, login_user, logout_user, current_user
+from flask.ext.babel import Babel, gettext
 from flask import Markup
 
 import pytz
+import prefs
 
 from database import db, create_flask_app
 
 app = create_flask_app()
+babel = Babel(app);
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -17,6 +20,9 @@ login_manager.user_loader(users.user_loader)
 login_manager.login_view = 'login'
 login_manager.session_protection = 'strong'
 
+@babel.localeselector
+def get_locale():
+    return 'en' #request.accept_languages.best_match(prefs.Config.LANG_SUPPORT)
 
 @app.route("/", defaults={'page': 1}, methods=['POST', 'GET'])
 @app.route("/<int:page>", methods=['POST', 'GET'])
@@ -100,7 +106,7 @@ def login():
                 login_user(user, remember=True)
                 return redirect(url_for('thread_list_view'))
             else:
-                flash(u'Login failed')
+                flash(gettext(u'Login failed'))
                 return redirect(url_for('login'))
         elif 'apply-username' in request.form:
             user = users.create_user(db.session, request.form['apply-username'], request.form['apply-password'], request.form['apply-email'])
