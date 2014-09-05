@@ -2,15 +2,12 @@ import os
 
 import key
 
-WEB_ROOT = '/home/t/'
-APP_PATH = 'ingroup'
-
 class Config(object):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///ingroup.db'
     SQLALCHEMY_ECHO = True
     SECRET_KEY = key.SECRET_KEY
-    APPLICATION_ROOT = os.path.join(WEB_ROOT, APP_PATH)
+    APPLICATION_ROOT = os.path.dirname(os.path.realpath(os.sys.argv[0]))
 
 
 THREADS_PER_PAGE = 20
